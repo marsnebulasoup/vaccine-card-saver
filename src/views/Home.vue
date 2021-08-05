@@ -1,68 +1,82 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <ion-header class="ion-no-border" mode="ios" collapse="condense">
+      <ion-toolbar> </ion-toolbar>
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <wrappable-title>Your Cards</wrappable-title>
       </ion-toolbar>
     </ion-header>
-    
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-    
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+      <add-a-card v-if="/*!Cards.length*/ true"></add-a-card>
+
+      <div v-if="DEBUG">
+        <!-- For debugging the reactive cards array -->
+        <button @click="update()">Update</button>
+        <pre>{{ JSON.stringify(Cards, null, 2) }}</pre>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import { IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/vue";
+import { defineComponent, inject, Ref } from "vue";
+import { useRouter } from "vue-router";
+import AddACard from "@/components/home/AddACard.vue";
+import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
+import { Card } from "@/utils/cards/card";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export default defineComponent({
-  name: 'Home',
+  name: "Home",
+  setup() {
+    const Cards: Ref<Card[]> = inject("VaccineCards") as Ref<Card[]>;
+    const router = useRouter();
+
+    
+
+    // For debugging the reactive Cards array
+    // console.log(Cards.value);
+    const DEBUG = false;
+    const update = () => {
+      Cards.value.push({
+        id: 3,
+        name: "Jim K. Foster",
+        dob: "2021-07-31T17:01:25.051Z",
+        dobFormatted: "7/31/2021",
+        fullyVaccinated: false,
+        patientNumber: "2837529873894",
+        doses: [
+          {
+            doseNumber: "1",
+            brand: "Pfizer",
+            date: "",
+            dateFormatted: "5/12/21",
+            administeredByOrAt: "CVS9999",
+            lot: "KS2384",
+          },
+        ],
+      });
+    };
+    return { router, update, DEBUG, Cards };
+  },
   components: {
     IonContent,
     IonHeader,
     IonPage,
-    IonTitle,
-    IonToolbar
-  }
+    IonToolbar,
+    AddACard,
+    WrappableTitle,
+  },
 });
 </script>
 
 <style scoped>
-#container {
-  text-align: center;
-  
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
+/* ion-toolbar {
+  margin-top: 50px;
+} */
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  
-  color: #8c8c8c;
-  
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+ion-title {
+  font-weight: 800;
 }
 </style>

@@ -1,0 +1,252 @@
+[
+	{
+		"time": "8:00-9:00",
+		"date": "2020-05-28",
+		"duration": 59,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-04-03",
+		"duration": 26,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-02-01",
+		"duration": 29,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-18",
+		"duration": 17,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-19",
+		"duration": 42,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-04-01",
+		"duration": 48,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-01-11",
+		"duration": 34,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-01-27",
+		"duration": 59,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-19",
+		"duration": 57,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-04-05",
+		"duration": 33,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-02-19",
+		"duration": 43,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-01-08",
+		"duration": 50,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-03-26",
+		"duration": 33,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-12",
+		"duration": 28,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-02-02",
+		"duration": 42,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-03-15",
+		"duration": 36,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-08",
+		"duration": 50,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-01-25",
+		"duration": 54,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-04",
+		"duration": 17,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-05-11",
+		"duration": 31,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-03-26",
+		"duration": 37,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-01-09",
+		"duration": 56,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-01-27",
+		"duration": 29,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-02-16",
+		"duration": 32,
+		"timeOfDay": "Daytime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	},
+	{
+		"time": "8:00-9:00",
+		"date": "2021-04-30",
+		"duration": 56,
+		"timeOfDay": "Nighttime",
+		"weather": {
+			"icon": "sunny",
+			"caption": "Clear"
+		}
+	}
+]

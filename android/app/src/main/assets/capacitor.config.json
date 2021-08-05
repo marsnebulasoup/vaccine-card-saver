@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "vaccine-card-saver",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}
