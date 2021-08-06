@@ -3,6 +3,7 @@
     <ion-row>
       <ion-col>
         <field-input
+          name="First Name"
           autocomplete="family-name"
           :required="true"
           :icon="person"
@@ -17,6 +18,7 @@
     <ion-row>
       <ion-col>
         <field-input
+          name="Last Name"
           autocomplete="given-name"
           :required="true"
           :icon="person"
@@ -29,6 +31,7 @@
       </ion-col>
       <ion-col>
         <field-input
+          name="Middle Initial"
           :icon="person"
           :max="1"
           placeholder="L"
@@ -50,6 +53,7 @@
       <ion-col>
         <!-- TODO: Add correct icon -->
         <field-input
+          name="Patient Number"
           :icon="documentText"
           placeholder="5S30M1HE25S7"
           :max="20"
@@ -61,7 +65,13 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <checkbox :icon="person" color="success" placeholder="Are you fully vaccinated?" v-model="content.fullyVaccinated">Fully Vaccinated</checkbox>
+        <checkbox
+          :icon="person"
+          color="success"
+          placeholder="Are you fully vaccinated?"
+          v-model="content.fullyVaccinated"
+          >Fully Vaccinated</checkbox
+        >
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -11,7 +11,7 @@
         :color="color"
         :wrapText="wrapCaption"
       >
-        <slot></slot>
+        <slot></slot>{{ required ? "*" : "" }}
       </caption-text>
     </ion-label>
     <div class="input-container">
@@ -46,13 +46,18 @@
 import { IonItem, IonLabel } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
 import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
-import { defineComponent, ref, toRef, watch } from "vue";
+import { defineComponent, inject, Ref, ref, toRef, watch } from "vue";
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
-import { InputValidators, ScrollUtils } from "@/utils/other";
+import {
+  Errors,
+  ErrorHandlers,
+  InputValidators,
+  ScrollUtils,
+} from "@/utils/other";
 
 export default defineComponent({
   name: "FieldInput",
-  setup(props, context) {
+  setup(props, { emit }) {
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: Event) => {
@@ -61,23 +66,34 @@ export default defineComponent({
       popoverEvent.value = ev;
     };
 
-    // const initialValue = props.modelValue;
-    // 👉👉👉 Figure out how to fix the problem where when you enter an invalid char
-    // into the input, it will erase the first time for some reason. Probably has something
-    // to do with the v-model here.
-
     const status = ref<"normal" | "pass" | "fail">("normal");
     const { validateInput } = InputValidators(
       toRef(props, "pattern"),
       status,
-      context.emit
+      emit
     );
-    const { scrollInput } = ScrollUtils();
 
     const inputValue = ref(props.modelValue || "");
     watch(inputValue, (curr) => {
       validateInput(curr);
     });
+
+    const errors = ErrorHandlers(inject("errors") as Ref<Errors>, props.name); // TODO: fix case where props.name is undefined
+    watch(
+      status,
+      (curr) => {
+        console.log(curr);
+        if (curr === "normal" && props.required)
+          errors.addError(`${props.name} field is required.`);
+        else if (curr === "fail")
+          errors.addError(`Invalid input in field ${props.name}`);
+        else errors.removeError();
+        console.log("\n\n");
+      },
+      { immediate: true }
+    );
+
+    const { scrollInput } = ScrollUtils();
 
     return {
       isPopoverOpen,
@@ -93,6 +109,10 @@ export default defineComponent({
   props: {
     modelValue: {
       type: String,
+    },
+    name: {
+      type: String,
+      required: true,
     },
     type: {
       type: String,

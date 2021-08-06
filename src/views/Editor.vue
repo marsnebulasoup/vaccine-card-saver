@@ -13,7 +13,10 @@
     </ion-header>
     <ion-content :fullscreen="true">
       <div v-if="DEBUG" style="margin: 10px">
+        <h4><pre>Content</pre></h4>
         <pre>{{ JSON.stringify(content, null, 2) }}</pre>
+        <h4><pre>Validation Errors</pre></h4>
+        <pre>{{ JSON.stringify(errors, null, 2) }}</pre>
       </div>
       <div class="caption-padding">
         <caption-text size="20" color="dark" :wrapText="true"
@@ -56,6 +59,7 @@ import { arrowForward as continueIcon } from "ionicons/icons";
 import FullWidthButton from "@/components/other/buttons/FullWidthButton.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
 import { VaccineDose } from "@/utils/cards/card";
+import { Errors } from "@/utils/other";
 
 export default defineComponent({
   name: "Editor",
@@ -72,7 +76,9 @@ export default defineComponent({
       fullyVaccinated: false,
       doses: [],
     });
+    const errors = ref<Errors>({});
     provide("content", content);
+    provide("errors", errors);
 
     interface DeleteMeIExistOnlyForReference {
       id: number;
@@ -90,6 +96,7 @@ export default defineComponent({
       DEBUG,
       router,
       content,
+      errors,
       continueIcon,
       errorMsg,
     };

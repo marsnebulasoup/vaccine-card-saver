@@ -59,3 +59,23 @@ export const InputValidators = (pattern: Ref, status: Ref<"normal" | "pass" | "f
   }
 }
 
+export const ErrorHandlers = (errors: Ref<Errors>, name: string) => {
+  console.log(`New ErrorHandler @ ${name}`)
+  if (Object.keys(errors.value).includes(name)) console.error(`⚠ WARNING ⚠\n The name '${name}' is used for multiple fields and may screw up form validation.`)
+  return {
+    addError: (msg: string | undefined) => {
+      console.log(`Adding error to ${name}`)
+      errors.value[name] = msg || `Error in '${name}'`
+    },
+    removeError: () => {
+      console.log(`Removing error from ${name}`)
+      delete errors.value[name];
+    }
+  }
+
+
+}
+
+export interface Errors {
+  [key: string]: string;
+}
