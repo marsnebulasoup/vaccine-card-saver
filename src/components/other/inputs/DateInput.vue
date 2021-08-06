@@ -1,5 +1,10 @@
 <template>
-  <ion-item :class="{ 'no-padding': noPadding }" mode="ios" lines="none">
+  <ion-item
+    class="hide-item-click-animation"
+    :class="{ 'no-item-padding': noPadding }"
+    mode="ios"
+    lines="none"
+  >
     <ion-label v-if="$slots.default" position="stacked">
       <caption-text style="vertical-align: middle !important" :color="color">
         <slot></slot>
@@ -125,48 +130,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-ion-item {
-  --padding-end: 10px;
-
-  /* hides click animation on the ion-item element when the input is clicked */
-  --background-activated: #fff;
-  --background-activated-opacity: 1;
-}
-
-.no-padding {
-  --padding-start: 0;
-  --padding-end: 0;
-  --inner-padding-end: 0;
-}
-
-.input-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.input-container .input {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-  outline: none;
-  border: none;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  background: oldlace;
-}
-
-.input-container .icon {
-  /* padding: 3px; */
-  height: 100%;
-  color: white;
-  min-width: 40px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>

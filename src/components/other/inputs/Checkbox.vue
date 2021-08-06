@@ -1,5 +1,10 @@
 <template>
-  <ion-item :class="{ 'no-padding': noPadding }" mode="ios" lines="none">
+  <ion-item
+    class="hide-item-click-animation"
+    :class="{ 'no-item-padding': noPadding }"
+    mode="ios"
+    lines="none"
+  >
     <ion-label v-if="$slots.default" position="stacked">
       <caption-text
         style="vertical-align: middle !important"
@@ -129,28 +134,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-ion-item {
-  --padding-end: 10px;
-
-  /* hides click animation on the ion-item element when the input is clicked */
-  --background-activated: #fff;
-  --background-activated-opacity: 1;
-}
-
 ion-checkbox {
   --transition: 175ms ease-in-out;
-}
-
-.no-padding {
-  --padding-start: 0;
-  --padding-end: 0;
-  --inner-padding-end: 0;
-}
-
-.input-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
 }
 
 .checkbox-container {
@@ -169,17 +154,5 @@ ion-checkbox {
 .placeholder {
   white-space: nowrap;
   font-size: 0.95em;
-}
-
-.input-container .icon {
-  /* padding: 3px; */
-  height: 100%;
-  color: white;
-  min-width: 40px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>
