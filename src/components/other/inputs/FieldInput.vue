@@ -21,7 +21,8 @@
         :placeholder="placeholder"
         :autocomplete="autocomplete"
         :required="required"
-        v-model="inputValue"
+        :value="inputValue"
+        @input="inputValue = $event.target.value"
         @click="scrollInput($event, 'y')"
         class="input"
       />
@@ -86,6 +87,7 @@ export default defineComponent({
       validateInput,
       inputValue,
       scrollInput,
+      log: console.log,
     };
   },
   props: {
