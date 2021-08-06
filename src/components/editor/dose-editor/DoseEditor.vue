@@ -50,8 +50,9 @@
       >
         <icon-button
           @click="$emit('removeEditor')"
+          class="ion-no-padding"
           color="danger"
-          :iconLeft="deleteIcon"
+          fill="clear"
           mode="md"
           >Remove</icon-button
         >
@@ -73,7 +74,6 @@ import {
   calendarOutline as dateIcon,
   gridOutline as lotNumberIcon,
   locationOutline as clinicSiteIcon,
-  closeOutline as deleteIcon,
 } from "ionicons/icons";
 import IconButton from "@/components/other/buttons/IconButton.vue";
 import DateInput from "@/components/other/inputs/DateInput.vue";
@@ -90,7 +90,6 @@ export default defineComponent({
       dateIcon,
       lotNumberIcon,
       clinicSiteIcon,
-      deleteIcon,
       tester,
       log: console.log,
     };
