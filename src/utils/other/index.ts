@@ -1,6 +1,7 @@
 // Random Utility Functions
 import { Ref } from "vue";
 
+
 // Adapted from https://stackoverflow.com/a/7224605/
 export const capitalizeFirstLetter =
   (s: string) =>
@@ -22,16 +23,16 @@ export const ScrollUtils = () => {
   const scrollIntoView = require('scroll-into-view');
 
   return {
-    scrollInput: (ev: Event, direction: "x" | "y", time = 300) => {
+    scrollInput: (ev: any, direction: "x" | "y", time = 300, callback?: Function) => {
       console.log("Scrolling");
-      if (!ev.target) return
-      scrollIntoView(ev.target, {
+      // if (!ev.target) return
+      scrollIntoView(ev.target || ev, {
         time,
         align: {
           lockX: direction !== "x" && direction,
           lockY: direction !== "y" && direction,
         },
-      });
+      }, callback);
     }
   }
 }
@@ -57,25 +58,4 @@ export const InputValidators = (pattern: Ref, status: Ref<"normal" | "pass" | "f
       status.value = "pass"
     }
   }
-}
-
-export const ErrorHandlers = (errors: Ref<Errors>, name: string) => {
-  console.log(`New ErrorHandler @ ${name}`)
-  if (Object.keys(errors.value).includes(name)) console.error(`⚠ WARNING ⚠\n The name '${name}' is used for multiple fields and may screw up form validation.`)
-  return {
-    addError: (msg: string | undefined) => {
-      console.log(`Adding error to ${name}`)
-      errors.value[name] = msg || `Error in '${name}'`
-    },
-    removeError: () => {
-      console.log(`Removing error from ${name}`)
-      delete errors.value[name];
-    }
-  }
-
-
-}
-
-export interface Errors {
-  [key: string]: string;
 }

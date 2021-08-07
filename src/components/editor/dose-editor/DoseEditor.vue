@@ -3,6 +3,8 @@
     <ion-card-content>
       <ion-card-title>New Dose</ion-card-title>
       <chip-selector
+        name="Dose Number"
+        :required="true"
         :items="['First', 'Second', 'Other']"
         :icon="doseNumberIcon"
         type="single"
@@ -11,6 +13,8 @@
         >Dose</chip-selector
       >
       <chip-selector
+        name="Brand"
+        :required="true"
         :items="['Pfizer', 'Moderna', 'J&J']"
         :icon="vaccineBrandIcon"
         type="single"
@@ -19,7 +23,9 @@
         >Brand</chip-selector
       >
       <field-input
+        name="Lot Number"
         :icon="lotNumberIcon"
+        :required="true"
         color="medium"
         placeholder="NX74205"
         :max="10"
@@ -28,16 +34,20 @@
         >LOT Number</field-input
       >
       <date-input
+        name="Date"
         v-model="tester"
         :icon="dateIcon"
+        :required="true"
         type="date"
         color="medium"
         :noPadding="true"
         >Date</date-input
       >
       <field-input
+        name="Healthcare Professional or Clinic Site"
         :icon="dateIcon"
         color="medium"
+        :required="true"
         placeholder="Julian Bashir, MD"
         :pattern="/^[\p{L}0-9 !@#$%^&*()_?:;,.'-]+$/u"
         :noPadding="true"

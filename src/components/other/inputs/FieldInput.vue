@@ -4,6 +4,7 @@
     :class="{ 'no-item-padding': noPadding }"
     mode="ios"
     lines="none"
+    ref="item"
   >
     <ion-label v-if="$slots.default" position="stacked">
       <caption-text
@@ -36,6 +37,11 @@
     </div>
   </ion-item>
 
+  <validation-popover-wrapper
+    v-model:isPopoverOpen="isValidatorErrorVisible"
+    v-model:popoverEvent="validatorErrorEl"
+    :message="validatorErrorMsg"
+  ></validation-popover-wrapper>
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
@@ -45,22 +51,29 @@
 <script lang="ts">
 import { IonItem, IonLabel } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
+import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
 import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
-import { defineComponent, inject, Ref, ref, toRef, watch } from "vue";
-import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
 import {
-  Errors,
-  ErrorHandlers,
-  InputValidators,
-  ScrollUtils,
-} from "@/utils/other";
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  Ref,
+  ref,
+  toRef,
+  watch,
+} from "vue";
+import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
+import { InputValidators, ScrollUtils } from "@/utils/other";
+import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 
 export default defineComponent({
   name: "FieldInput",
   setup(props, { emit }) {
+    const item = ref();
+
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
-    const openPopover = (ev: Event) => {
+    const openPopover = (ev: any) => {
       console.log(ev);
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
@@ -78,24 +91,34 @@ export default defineComponent({
       validateInput(curr);
     });
 
-    const errors = ErrorHandlers(inject("errors") as Ref<Errors>, props.name); // TODO: fix case where props.name is undefined
+    const errors: Ref<Errors> = inject("errors") as Ref<Errors>;
+
+    const {
+      addError,
+      removeError,
+      deleteError,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
+    } = ErrorHandlers(errors, props.name, item);
     watch(
       status,
       (curr) => {
-        console.log(curr);
         if (curr === "normal" && props.required)
-          errors.addError(`${props.name} field is required.`);
+          addError(`${props.name} is required.`);
         else if (curr === "fail")
-          errors.addError(`Invalid input in field ${props.name}`);
-        else errors.removeError();
-        console.log("\n\n");
+          addError(props.errorMsg || `Invalid input for ${props.name}`);
+        else removeError();
       },
       { immediate: true }
     );
 
+    onBeforeUnmount(() => deleteError());
+
     const { scrollInput } = ScrollUtils();
 
     return {
+      item,
       isPopoverOpen,
       popoverEvent,
       openPopover,
@@ -103,6 +126,9 @@ export default defineComponent({
       validateInput,
       inputValue,
       scrollInput,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
       log: console.log,
     };
   },
@@ -124,6 +150,9 @@ export default defineComponent({
     required: {
       type: Boolean,
       default: false,
+    },
+    errorMsg: {
+      type: String,
     },
     pattern: {
       type: RegExp,
@@ -156,8 +185,9 @@ export default defineComponent({
     IonItem,
     IonLabel,
     CaptionText,
-    PopoverWrapper,
+    ValidationPopoverWrapper,
     ValidatorIcon,
+    PopoverWrapper,
   },
 });
 </script>

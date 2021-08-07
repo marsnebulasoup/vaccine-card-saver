@@ -1,5 +1,5 @@
 <template>
-  <ion-item class="ion-no-padding" lines="none">
+  <ion-item ref="item" class="ion-no-padding" lines="none">
     <ion-label style="max-width: fit-content" slot="start">
       <ion-text :color="captionColor">
         <ion-icon
@@ -32,27 +32,35 @@
       ></bbq-chip>
     </div>
   </ion-item>
+  <validation-popover-wrapper
+    v-model:isPopoverOpen="isValidatorErrorVisible"
+    v-model:popoverEvent="validatorErrorEl"
+    :message="validatorErrorMsg"
+  ></validation-popover-wrapper>
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
   ></popover-wrapper>
 </template>
 
-<script>
-import { defineComponent, ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref, watch, inject, onBeforeUnmount, Ref } from "vue";
 import { IonLabel, IonItem, IonText, IonIcon } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
 import BBQChip from "@/components/other/chips/BBQChip.vue";
 import PopoverWrapper from "../popover/PopoverWrapper.vue";
-import scrollIntoView from "scroll-into-view";
+import ValidationPopoverWrapper from "../popover/ValidationPopoverWrapper.vue";
+import { ScrollUtils } from "@/utils/other";
+import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
 
 export default defineComponent({
   name: "ChipSelector",
   emits: ["selectionChanged"],
   setup(props, context) {
-    const selected = ref([]);
+    const item = ref();
+    const selected = ref<any>([]);
 
-    const computeSelected = (item) => {
+    const computeSelected = (item: any) => {
       if (props.type === "single") {
         selected.value.includes(item)
           ? (selected.value = [])
@@ -65,30 +73,67 @@ export default defineComponent({
       context.emit("selectionChanged", selected);
     };
 
-    const handleClicks = (item, ev) => {
+    const { scrollInput } = ScrollUtils();
+    const handleClicks = (item: any, ev: PointerEvent) => {
       computeSelected(item);
-      scrollIntoView(ev.target, { time: 125, align: { lockY: true } });
+      scrollInput(ev, "x", 125);
     };
 
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
-    const openPopover = (ev) => {
+    const openPopover = (ev: PointerEvent) => {
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
 
+    const errors: Ref<Errors> = inject("errors") as Ref<Errors>;
+
+    const {
+      addError,
+      removeError,
+      deleteError,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
+    } = ErrorHandlers(errors, props.name, item);
+    watch(
+      () => selected.value.length,
+      (itemsAreSelected) => {
+        if (itemsAreSelected) removeError();
+        else addError(props.errorMsg || `${props.name} is required.`);
+      },
+      { immediate: true }
+    );
+
+    onBeforeUnmount(() => deleteError());
+
     return {
+      item,
       selected,
       handleClicks,
       isPopoverOpen,
       popoverEvent,
       openPopover,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
     };
   },
   props: {
+    name: {
+      type: String,
+      required: true,
+    },
     items: {
       type: Array,
       required: true,
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    errorMsg: {
+      type: String,
     },
     type: {
       type: String,
@@ -115,6 +160,7 @@ export default defineComponent({
     IonLabel,
     IonText,
     IonIcon,
+    ValidationPopoverWrapper,
   },
 });
 </script>

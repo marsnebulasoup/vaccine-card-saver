@@ -4,10 +4,11 @@
     :class="{ 'no-item-padding': noPadding }"
     mode="ios"
     lines="none"
+    ref="item"
   >
     <ion-label v-if="$slots.default" position="stacked">
       <caption-text style="vertical-align: middle !important" :color="color">
-        <slot></slot>
+        <slot></slot>{{ required ? "*" : "" }}
       </caption-text>
     </ion-label>
     <div @click="openPicker($event)" class="input-container">
@@ -33,6 +34,11 @@
     </div>
   </ion-item>
 
+  <validation-popover-wrapper
+    v-model:isPopoverOpen="isValidatorErrorVisible"
+    v-model:popoverEvent="validatorErrorEl"
+    :message="validatorErrorMsg"
+  ></validation-popover-wrapper>
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
@@ -42,19 +48,21 @@
 <script lang="ts">
 import { IonItem, IonLabel, IonDatetime } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
+import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
 import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, inject, onBeforeUnmount, Ref, ref, watch } from "vue";
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
+import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
 
 export default defineComponent({
   name: "DateInput",
   inject: ["platform"],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
+    const item = ref();
     // Opens Popover
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: any) => {
-      // console.log(ev)
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -74,7 +82,30 @@ export default defineComponent({
       emit("update:modelValue", curr);
     });
 
+    const errors: Ref<Errors> = inject("errors") as Ref<Errors>;
+
+    const {
+      addError,
+      removeError,
+      deleteError,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
+    } = ErrorHandlers(errors, props.name, item);
+    watch(
+      status,
+      (curr) => {
+        if (curr === "normal" && props.required)
+          addError(props.errorMsg || `${props.name} is required.`);
+        else if (curr === "pass") removeError();
+      },
+      { immediate: true }
+    );
+
+    onBeforeUnmount(() => deleteError());
+
     return {
+      item,
       isPopoverOpen,
       popoverEvent,
       openPopover,
@@ -82,12 +113,19 @@ export default defineComponent({
       openPicker,
       selectedDate,
       status,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
       log: console.log,
     };
   },
   props: {
     modelValue: {
       type: String,
+    },
+    name: {
+      type: String,
+      required: true,
     },
     type: {
       type: String,
@@ -99,6 +137,9 @@ export default defineComponent({
     required: {
       type: Boolean,
       default: false,
+    },
+    errorMsg: {
+      type: String,
     },
     autocomplete: {
       type: String,
@@ -126,6 +167,7 @@ export default defineComponent({
     IonDatetime,
     CaptionText,
     PopoverWrapper,
+    ValidationPopoverWrapper,
     ValidatorIcon,
   },
 });

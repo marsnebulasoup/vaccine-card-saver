@@ -25,8 +25,8 @@ ion-toolbar {
 .hide-item-click-animation {
   --padding-end: 10px;
   /* hides click animation on the ion-item element when the input is clicked */
-  --background-activated: #fff;
-  --background-activated-opacity: 1;
+  --background-activated: transparent;
+  --background-activated-opacity: 0;
 }
 
 .no-item-padding {
@@ -49,6 +49,8 @@ ion-toolbar {
   border: none;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
   background: oldlace;
 }
 

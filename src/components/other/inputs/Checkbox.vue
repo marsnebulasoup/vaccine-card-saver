@@ -4,13 +4,14 @@
     :class="{ 'no-item-padding': noPadding }"
     mode="ios"
     lines="none"
+    ref="item"
   >
     <ion-label v-if="$slots.default" position="stacked">
       <caption-text
         style="vertical-align: middle !important"
         :captionColor="captionColor"
       >
-        <slot></slot>
+        <slot></slot>{{ required ? "*" : "" }}
       </caption-text>
     </ion-label>
     <div class="input-container">
@@ -36,7 +37,11 @@
       ></validator-icon>
     </div>
   </ion-item>
-  <!-- 👉👉👉 popover doesn't open when clicking on the icon, instead it just toggle the checkbox -->
+  <validation-popover-wrapper
+    v-model:isPopoverOpen="isValidatorErrorVisible"
+    v-model:popoverEvent="validatorErrorEl"
+    :message="validatorErrorMsg"
+  ></validation-popover-wrapper>
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
@@ -46,14 +51,25 @@
 <script lang="ts">
 import { IonItem, IonLabel, IonCheckbox, IonText } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
+import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
 import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
-import { defineComponent, onMounted, ref, watch } from "vue";
+import {
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  Ref,
+  ref,
+  watch,
+} from "vue";
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
+import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 
 export default defineComponent({
   name: "Checkbox",
   inject: ["platform"],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
+    const item = ref();
     // Opens Popover
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
@@ -69,6 +85,28 @@ export default defineComponent({
       status.value = curr ? "pass" : "normal";
       emit("update:modelValue", curr);
     });
+
+    const errors: Ref<Errors> = inject("errors") as Ref<Errors>;
+
+    const {
+      addError,
+      removeError,
+      deleteError,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
+    } = ErrorHandlers(errors, props.name, item);
+    watch(
+      status,
+      (curr) => {
+        if (curr === "normal" && props.required)
+          addError(props.errorMsg || `${props.name} is required.`);
+        else if (curr === "pass") removeError();
+      },
+      { immediate: true }
+    );
+
+    onBeforeUnmount(() => deleteError());
 
     // Unfortunately ion-checkbox dumps a full-width label over the container, so any clicks
     // are navigated to the checkbox, and the the popover can't be opened. This attempts to
@@ -89,11 +127,15 @@ export default defineComponent({
     );
 
     return {
+      item,
       isPopoverOpen,
       popoverEvent,
       openPopover,
       isSelected,
       status,
+      isValidatorErrorVisible,
+      validatorErrorMsg,
+      validatorErrorEl,
       checkbox,
     };
   },
@@ -101,12 +143,23 @@ export default defineComponent({
     modelValue: {
       type: Boolean,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     icon: {
       type: String,
     },
     placeholder: {
       type: String,
       default: "",
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    errorMsg: {
+      type: String,
     },
     color: {
       type: String,
@@ -127,6 +180,7 @@ export default defineComponent({
     IonText,
     IonCheckbox,
     CaptionText,
+    ValidationPopoverWrapper,
     PopoverWrapper,
     ValidatorIcon,
   },

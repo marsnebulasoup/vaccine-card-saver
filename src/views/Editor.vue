@@ -33,7 +33,7 @@
       <!-- <ion-button @click="errorMsg ? errorMsg = undefined : errorMsg = 'This is a sample error message'">Toggle error</ion-button> -->
     </ion-content>
     <full-width-button
-      @click="router.push('preview')"
+      @click="submitForm()"
       :error="errorMsg"
       :iconRight="continueIcon"
       >Continue</full-width-button
@@ -59,7 +59,7 @@ import { arrowForward as continueIcon } from "ionicons/icons";
 import FullWidthButton from "@/components/other/buttons/FullWidthButton.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
 import { VaccineDose } from "@/utils/cards/card";
-import { Errors } from "@/utils/other";
+import { Errors, VerifyValidation } from "@/utils/other/ErrorHandlers";
 
 export default defineComponent({
   name: "Editor",
@@ -91,12 +91,18 @@ export default defineComponent({
       doses: VaccineDose[];
     }
     const errorMsg = ref();
+
+    const submitForm = () => {
+      VerifyValidation(errors, () => router.push("preview"));
+    };
+
     const DEBUG = true;
     return {
       DEBUG,
       router,
       content,
       errors,
+      submitForm,
       continueIcon,
       errorMsg,
     };

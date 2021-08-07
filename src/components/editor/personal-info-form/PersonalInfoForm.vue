@@ -3,7 +3,8 @@
     <ion-row>
       <ion-col>
         <field-input
-          name="First Name"
+          name="Last Name"
+          errorMsg="That doesn't look like a last name"
           autocomplete="family-name"
           :required="true"
           :icon="person"
@@ -18,7 +19,8 @@
     <ion-row>
       <ion-col>
         <field-input
-          name="Last Name"
+          name="First Name"
+          errorMsg="That doesn't look like a first   name"
           autocomplete="given-name"
           :required="true"
           :icon="person"
@@ -32,6 +34,7 @@
       <ion-col>
         <field-input
           name="Middle Initial"
+          errorMsg="That doesn't look like a middle initial"
           :icon="person"
           :max="1"
           placeholder="L"
@@ -44,7 +47,12 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <date-input :icon="calendar" type="date" v-model="content.dob"
+        <date-input
+          name="Date of Birth"
+          :required="true"
+          :icon="calendar"
+          type="date"
+          v-model="content.dob"
           >Date of Birth</date-input
         >
       </ion-col>
@@ -54,6 +62,7 @@
         <!-- TODO: Add correct icon -->
         <field-input
           name="Patient Number"
+          errorMsg="That doesn't look like a valid patient number"
           :icon="documentText"
           placeholder="5S30M1HE25S7"
           :max="20"
@@ -66,6 +75,7 @@
     <ion-row>
       <ion-col>
         <checkbox
+          name="Fully Vaccinated"
           :icon="person"
           color="success"
           placeholder="Are you fully vaccinated?"
