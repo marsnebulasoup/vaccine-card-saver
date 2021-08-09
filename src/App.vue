@@ -6,10 +6,10 @@
 
 <script lang="ts">
 import { IonApp, IonRouterOutlet, isPlatform } from "@ionic/vue";
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, provide, ref } from "vue";
 import { useRouter } from "vue-router";
 import Transitions from "./utils/PageTransition";
-import Cards from "@/utils/cards";
+import CardHandler from "@/utils/cards";
 import Brands from "@/utils/cards/brands";
 export default defineComponent({
   name: "App",
@@ -22,13 +22,19 @@ export default defineComponent({
     onMounted(() => {
       Transitions.HandleTransitions(router);
     });
-  },
-  provide() {
-    return {
-      VaccineCards: Cards(),
-      VaccineBrands: new Brands(),
-      platform: isPlatform("ios") ? "ios" : "md",
-    };
+
+    const resetEditor = ref(true);
+    router.beforeEach((to, from, next) => {
+      if (to.name === "Editor" && from.name == "Preview")
+        resetEditor.value = false;
+      else resetEditor.value = true;
+      next();
+    });
+
+    provide("CardHandler", new CardHandler());
+    provide("VaccineBrands", new Brands());
+    provide("platform", isPlatform("ios") ? "ios" : "md");
+    provide("resetEditor", resetEditor);
   },
 });
 </script>

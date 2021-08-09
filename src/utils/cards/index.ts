@@ -1,39 +1,59 @@
-import { Card } from './card';
-import { watch, ref, Ref } from 'vue';
-import { Storage } from '@capacitor/storage';
+import { Ref } from 'vue';
+import { Card, FormatVaccineCard } from './card';
+import Cards from './cards';
+
 
 const DEBUG = false;
 
-export default function Cards(): Ref<Card[]> {
+class CardHandler {
+  cards: Ref<Card[]>;
+  constructor() {
+    this.cards = Cards()
+  }
 
-  const cards = ref<Card[]>([]);
+  get allCards() {
+    return this.cards as Readonly<Ref<Card[]>>;
+  }
 
-  Storage.get({ key: 'cards' })
-    .then(resp => {
-      if (typeof resp == "object")
-        if (typeof resp.value == "string") {
-          const parsedCards = JSON.parse(resp.value)
-          if (parsedCards.length) {
-            if (DEBUG) console.log('Setting cards to parsedCards')
-            cards.value = parsedCards
-          }
-        }
-        else console.log('Saved cards not found')
-      else console.log('Saved cards not object')
-    })
-    .finally(() => {
-      watch(() => cards, (curr: Ref<Card[]>): void => {
-        if (DEBUG) {
-          console.log('Cards changed, saving them ')
-          console.log(curr.value)
-        }
-        Storage.set({
-          key: 'cards',
-          value: JSON.stringify(cards.value)
-        })
-      }, { deep: true })
-    });
+  getCard(id: number): Card | undefined {
+    return this.cards.value.find(card => card.id === id);
+  }
 
-  return cards;
+  getCardIndex(id: number): number {
+    return this.cards.value.findIndex(card => card.id === id);
+  }
+
+  addCard(card: Card): void {
+    // 👉👉👉 look into duplicates being made here...but that's probably not an issue. also display the card on the home screen when it is added
+    if (card.id) this.editCard(card) // for new cards, the id should be 0, since it'll be changed here
+    card.id = this.generateId()
+    this.cards.value.push(
+      FormatVaccineCard(card)
+    );
+  }
+
+  editCard(card: Card): boolean {
+    const index = this.getCardIndex(card.id);
+    if (~index) {
+      this.cards.value[index] = FormatVaccineCard(card)
+      return true
+    }
+    return false
+  }
+
+  removeCard(id: number): void {
+    this.cards.value = this.cards.value.filter(card => card.id !== id)
+  }
+
+  generateId(): number {
+    const ids = this.cards.value.map(card => card.id);
+    let id = 0;
+    while (ids.includes(id)) {
+      id = Math.floor(Math.random() * 10000000000);
+      DEBUG && console.error(`⚠ WARNING ⚠\n The ID '${id}' is used for multiple Cards, so it'll be changed to '${id}'`)
+    }
+    return id
+  }
 }
 
+export default CardHandler;

@@ -55,7 +55,7 @@ import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
 
 export default defineComponent({
   name: "ChipSelector",
-  emits: ["selectionChanged"],
+  emits: ["update:modelValue"],
   setup(props, context) {
     const item = ref();
     const selected = ref<any>([]);
@@ -65,12 +65,14 @@ export default defineComponent({
         selected.value.includes(item)
           ? (selected.value = [])
           : (selected.value = [item]);
+        context.emit("update:modelValue", selected.value[0] || "");
       } else if (props.type === "multi") {
         selected.value.includes(item)
-          ? (selected.value = selected.value.filter((i) => i !== item))
+          ? (selected.value = selected.value.filter((i: any) => i !== item))
           : selected.value.push(item);
+        context.emit("update:modelValue", selected);
       }
-      context.emit("selectionChanged", selected);
+      
     };
 
     const { scrollInput } = ScrollUtils();
@@ -124,9 +126,12 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    modelValue: {
+      type: [Array, String],
+    },
     items: {
       type: Array,
-      required: true,
+      required: true
     },
     required: {
       type: Boolean,

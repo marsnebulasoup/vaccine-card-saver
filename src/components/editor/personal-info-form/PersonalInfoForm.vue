@@ -88,16 +88,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, inject } from "vue";
+import { defineComponent, Ref, inject, watch } from "vue";
 import { IonGrid, IonRow, IonCol } from "@ionic/vue";
 import { person, calendar, documentText } from "ionicons/icons";
 import FieldInput from "@/components/other/inputs/FieldInput.vue";
 import DateInput from "@/components/other/inputs/DateInput.vue";
 import Checkbox from "@/components/other/inputs/Checkbox.vue";
+import { Card } from "@/utils/cards/card";
 export default defineComponent({
   name: "PersonalInfoForm",
   setup() {
-    const content: Ref = inject("content") as Ref;
+    const content: Ref<Card> = inject("content") as Ref<Card>;
+    watch(content, (curr) => console.log(curr));
     return { person, content, calendar, documentText };
   },
   components: {

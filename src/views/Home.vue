@@ -12,7 +12,7 @@
       <div v-if="DEBUG">
         <!-- For debugging the reactive cards array -->
         <button @click="update()">Update</button>
-        <pre>{{ JSON.stringify(Cards, null, 2) }}</pre>
+        <pre>{{ JSON.stringify(cards.allCards.value, null, 2) }}</pre>
       </div>
     </ion-content>
   </ion-page>
@@ -20,35 +20,44 @@
 
 <script lang="ts">
 import { IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/vue";
-import { defineComponent, inject, Ref } from "vue";
+import { defineComponent, inject } from "vue";
 import { useRouter } from "vue-router";
 import AddACard from "@/components/home/AddACard.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
-import { Card } from "@/utils/cards/card";
+import { DoseNumbers } from "@/utils/cards/card";
+import CardHandler from "@/utils/cards";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export default defineComponent({
   name: "Home",
-  setup() {
-    const Cards: Ref<Card[]> = inject("VaccineCards") as Ref<Card[]>;
-    const router = useRouter();
+  props: {
+    id: {
+      type: Number
+    }    
+  },
+  setup() {    
+    const cards: CardHandler = inject("CardHandler") as CardHandler;
+    const router = useRouter();    
 
     
 
     // For debugging the reactive Cards array
     // console.log(Cards.value);
-    const DEBUG = false;
+    const DEBUG = true;
     const update = () => {
-      Cards.value.push({
+      cards.addCard({
         id: 3,
-        name: "Jim K. Foster",
+        lastName: "Smith",
+        firstName: "John",
+        middleInitial: "K",
+        name: "",
         dob: "2021-07-31T17:01:25.051Z",
-        dobFormatted: "7/31/2021",
+        dobFormatted: "",
         fullyVaccinated: false,
         patientNumber: "2837529873894",
         doses: [
           {
-            doseNumber: "1",
+            doseNumber: '1' as DoseNumbers,
             brand: "Pfizer",
             date: "",
             dateFormatted: "5/12/21",
@@ -58,7 +67,7 @@ export default defineComponent({
         ],
       });
     };
-    return { router, update, DEBUG, Cards };
+    return { router, update, cards, DEBUG };
   },
   components: {
     IonContent,

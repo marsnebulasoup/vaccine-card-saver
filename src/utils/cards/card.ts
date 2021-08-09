@@ -2,55 +2,38 @@ import Brands from './brands';
 import { capitalizeFirstLetter, DateUtils } from "@/utils/other"
 
 
-export class VaccineCard {
-  id: number;
-  name: string;
-  dob: string;
-  dobFormatted: string;
-  patientNumber: string;
-  fullyVaccinated: boolean;
-  doses: VaccineDose[];
-  constructor(
-    { id, lastName, firstName, middleInitial, dob, patientNumber, fullyVaccinated, doses }:
-      { id: number; lastName: string; firstName: string; middleInitial: string; dob: string; patientNumber?: string; fullyVaccinated: boolean; doses: VaccineDose[]; }
-  ) {
-    this.id = id;
-    this.name = this.#processName(lastName, firstName, middleInitial);
-    this.dob = DateUtils.isDate(dob) ? dob : "N/A";
-    this.dobFormatted = DateUtils.formatDate(dob);
-    this.patientNumber = patientNumber || "N/A";
-    this.fullyVaccinated = fullyVaccinated;
-    this.doses = doses;
+export function FormatVaccineCard(card: Card) {
+  let { id, lastName, firstName, middleInitial, dob, patientNumber, fullyVaccinated, doses } = card
+  firstName = capitalizeFirstLetter(firstName).trim();
+  lastName = capitalizeFirstLetter(lastName).trim();
+
+  // Capitalizes and adds a period to the end of the first initial of the middle name
+  // Note that this adds a space to the end so that if it is added to `name`, it will be formatted properly
+  middleInitial = `${middleInitial.slice(0, 1)}${middleInitial.length ? '. ' : ''}`.toLocaleUpperCase();
+
+  card = {
+    id: id,
+    lastName: lastName,
+    firstName: firstName,
+    middleInitial: middleInitial,
+    name: `${firstName} ${middleInitial || ""}${lastName}`,
+    dob: DateUtils.isDate(dob) ? dob : "N/A",
+    dobFormatted: DateUtils.formatDate(dob),
+    patientNumber: patientNumber || "N/A",
+    fullyVaccinated: fullyVaccinated,
+    doses: doses,
   }
+  return card
+}
 
-  #processName(last: string, first: string, middle: string) {
-    first = capitalizeFirstLetter(first).trim();
-    last = capitalizeFirstLetter(last).trim();
-
-    // Capitalizes and adds a period to the end of the first initial of the middle name
-    // Note that this adds a space to the end so that if it is added to `name`, it will be formatted properly
-    middle = `${middle.slice(0, 1)}${middle.length ? '.' : ''} `.toLocaleUpperCase();
-
-    return `${first} ${middle !== "" ? middle : ""}${last}`;
-  }
-
-  get FormattedCard() {
-    const card: Card = {
-      id: 2345,
-      name: this.name,
-      dob: this.dob,
-      dobFormatted: this.dobFormatted,
-      patientNumber: this.patientNumber,
-      fullyVaccinated: this.fullyVaccinated,
-      doses: this.doses.map(dose => dose.FormattedDose)
-    }
-    return card
-  }
-
+export enum DoseNumbers {
+  First = "1",
+  Second = "2",
+  Other = "Other"
 }
 
 export class VaccineDose {
-  doseNumber: Dose["doseNumber"];
+  doseNumber: DoseNumbers;
   brand: string;
   date: string;
   lot: string;
@@ -58,19 +41,24 @@ export class VaccineDose {
   administeredByOrAt: string;
   constructor(
     { doseNumber, brand, date, administeredByOrAt, lot }:
-      { doseNumber: Dose["doseNumber"]; brand: string; date: string; administeredByOrAt: string; lot: string; }
+      { doseNumber: string; brand: string; date: string; administeredByOrAt: string; lot: string }
   ) {
-    this.doseNumber = doseNumber;
-    this.brand = this.#processBrands(brand)
-    this.date = date;
+    // TODO: 👉👉👉 the chip selector for dose numbers have fields "First", "Second", "Other", which are not in the type "1" | "2" | "Other" ...enums might be better for this?
+    // also stress test this af
+    this.doseNumber = Object.keys(DoseNumbers).includes(doseNumber) ? DoseNumbers[doseNumber as keyof typeof DoseNumbers] : DoseNumbers.Other;
+    this.brand = this.processBrands(brand)
+
+    const isDate = DateUtils.isDate(date);
+    this.date = isDate ? isDate.toISOString() : "N/A";
+
     this.dateFormatted = DateUtils.formatDate(date)
     this.administeredByOrAt = administeredByOrAt;
     this.lot = lot || "N/A"
   }
 
-  #processBrands(brand: string) {
-    const { isBrand } = new Brands();
-    return isBrand(brand) ? brand : "N/A"
+  processBrands(brand: string) {
+    const brands = new Brands();
+    return brands.isBrand(brand) ? brand : "N/A"
   }
 
   get FormattedDose() {
@@ -88,9 +76,11 @@ export class VaccineDose {
 
 
 // Interfaces
-
 export interface Card {
   id: number; // TODO: figure out how to work with these ids
+  lastName: string;
+  firstName: string;
+  middleInitial: string;
   name: string;
   dob: string;
   dobFormatted: string;
@@ -99,14 +89,17 @@ export interface Card {
   doses: Dose[];
 }
 
+
+
 export interface Dose {
-  doseNumber: "1" | "2" | "Other"; // Hardcoded for now since the design of the card would have to change to add more doses
+  doseNumber: DoseNumbers; // Hardcoded for now since the design of the card would have to change to add more doses
   brand: string;
   date: string;
   dateFormatted: string;
   administeredByOrAt: string;
   lot: string;
 }
+
 
 
 

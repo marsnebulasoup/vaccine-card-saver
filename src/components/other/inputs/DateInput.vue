@@ -78,7 +78,7 @@ export default defineComponent({
     const status = ref<"normal" | "pass" | "fail">("normal");
 
     watch(selectedDate, (curr) => {
-      status.value = "pass";
+      status.value = curr ? "pass" : "normal";
       emit("update:modelValue", curr);
     });
 

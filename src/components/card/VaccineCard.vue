@@ -6,30 +6,30 @@
           <div class="items">
             <div>
               <caption-text size="12">{{
-                vaccineInfo.fullyVaccinated
+                card.fullyVaccinated
                   ? "Fully Vaccinated"
                   : "Not Fully Vaccinated"
               }}</caption-text>
               <wrappable-title
                 style="font-size: 33px; padding: 0; color: black"
-                >{{ vaccineInfo.name }}</wrappable-title
+                >{{ card.name }}</wrappable-title
               >
             </div>
           </div>
           <div class="text-end items">
             <div>
               <caption-text color="dark" size="12">DOB</caption-text>
-              <div class="small-text">{{ vaccineInfo.dobFormatted }}</div>
+              <div class="small-text">{{ card.dobFormatted }}</div>
             </div>
             <div>
               <caption-text color="dark" size="12">Patient No.</caption-text>
-              <div class="small-text">{{ vaccineInfo.patientNumber }}</div>
+              <div class="small-text">{{ card.patientNumber }}</div>
             </div>
           </div>
         </div>
         <caption-text class="dose-text" size="20">Doses</caption-text>
         <dose-card
-          v-for="(dose, index) in vaccineInfo.doses"
+          v-for="(dose, index) in card.doses"
           :key="index"
           :dose="dose"
         ></dose-card>
@@ -47,14 +47,14 @@ import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
 import DoseCard from "./DoseCard.vue";
 
 export default defineComponent({
-  name: "Card",
+  name: "VaccineCard",
   setup() {
     return {};
   },
   props: {
-    vaccineInfo: {
+    card: {
       type: Object,
-      required: false,
+      required: true,
       default() {
         return {
           name: "Joel K. Foster",

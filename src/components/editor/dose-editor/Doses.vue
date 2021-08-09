@@ -1,11 +1,16 @@
 <template>
   <section>
+    <error-details v-if="DEBUG" title="Doses" :data="doses" />
     <transition-group @enter="enter" @leave="leave" :css="false">
       <dose-editor
         v-for="(dose, index) in doses"
-        :key="dose"
+        :key="dose.id"
+        :dose="dose.dose"
+        @doseModified="doses[index].dose = $event"
         @removeEditor="removeADose(index)"
-        :class="{ 'this-is-the-last-dose-editor': index === doses.length - 1 }"
+        :class="{
+          'this-is-the-last-dose-editor': index === doses.length - 1,
+        }"
       ></dose-editor>
     </transition-group>
     <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
@@ -24,22 +29,54 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Ref, ref, watch } from "vue";
+import { defineComponent, inject, provide, Ref, ref, watch } from "vue";
 import AddADose from "./AddADose.vue";
 import DoseEditor from "./DoseEditor.vue";
 import ListAnimations from "@/utils/animations/list";
 import scrollIntoView from "scroll-into-view";
 import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
+import { Card, VaccineDose } from "@/utils/cards/card";
+import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 
 export default defineComponent({
   name: "Doses",
   setup() {
     const MAX_DOSES = 4;
-    const doses = ref<any>([]); // TODO: 👈 change type here
+
+    const doses = ref<{ id: number; dose: VaccineDose }[]>([]); // TODO: 👈 change type here
+    const content: Ref<Card> = inject("content") as Ref<Card>;
+
+    watch(
+      doses,
+      (curr) => {
+        content.value.doses = curr.map((dose) => dose.dose.FormattedDose);
+      },
+      { deep: true }
+    );
+
+    // Reset doses when view is re-navigated to
+    watch(
+      () => content.value.doses.length,
+      (dosesExist) => {
+        if(!dosesExist) doses.value = []
+      },
+      { deep: true }
+    );
+
     const count = ref(0);
     const addADose = () => {
-      doses.value.push(count.value);
+      doses.value.push({
+        id: count.value,
+        dose: new VaccineDose({
+          doseNumber: "",
+          brand: "",
+          date: "",
+          lot: "",
+          administeredByOrAt: "",
+        }),
+      });
+      console.log(doses.value);
       count.value++;
 
       // animate scroll
@@ -79,6 +116,8 @@ export default defineComponent({
       },
       { immediate: true }
     );
+
+    const DEBUG = true;
     return {
       MAX_DOSES,
       doses,
@@ -88,6 +127,8 @@ export default defineComponent({
       isValidatorErrorVisible,
       validatorErrorMsg,
       validatorErrorEl,
+      DEBUG,
+      log: console.log,
     };
   },
   methods: {
@@ -97,6 +138,7 @@ export default defineComponent({
     AddADose,
     DoseEditor,
     ValidationPopoverWrapper,
+    ErrorDetails,
   },
 });
 </script>

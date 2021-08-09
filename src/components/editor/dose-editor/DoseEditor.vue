@@ -1,29 +1,31 @@
 <template>
   <ion-card mode="ios">
     <ion-card-content>
+      <error-details v-if="DEBUG" title="Inputs" :data="inputs" />
       <ion-card-title>New Dose</ion-card-title>
       <chip-selector
         name="Dose Number"
         :required="true"
-        :items="['First', 'Second', 'Other']"
+        v-model="inputs.doseNumber"
+        :items="doseNumbers"
         :icon="doseNumberIcon"
         type="single"
-        color="primary"
-        @selectionChanged="log($event.value)"
+        color="primary"        
         >Dose</chip-selector
       >
       <chip-selector
         name="Brand"
         :required="true"
-        :items="['Pfizer', 'Moderna', 'J&J']"
+        v-model="inputs.brand"
+        :items="brandNames"
         :icon="vaccineBrandIcon"
         type="single"
-        color="success"
-        @selectionChanged="log($event.value)"
+        color="success"       
         >Brand</chip-selector
       >
       <field-input
         name="Lot Number"
+        v-model="inputs.lot"
         :icon="lotNumberIcon"
         :required="true"
         color="medium"
@@ -35,7 +37,7 @@
       >
       <date-input
         name="Date"
-        v-model="tester"
+        v-model="inputs.date"
         :icon="dateIcon"
         :required="true"
         type="date"
@@ -45,6 +47,7 @@
       >
       <field-input
         name="Healthcare Professional or Clinic Site"
+        v-model="inputs.administeredByOrAt"
         :icon="dateIcon"
         color="medium"
         :required="true"
@@ -66,18 +69,27 @@
           mode="md"
           >Remove</icon-button
         >
-        <!-- 😁 -->
       </div>
     </ion-card-content>
   </ion-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import {
+  defineComponent,
+  ref,
+  watch,
+} from "vue";
 import { IonCard, IonCardContent, IonCardTitle } from "@ionic/vue";
-import { addOutline } from "ionicons/icons";
+
 import ChipSelector from "@/components/other/chips/ChipSelector.vue";
-import FieldInput from "../../other/inputs/FieldInput.vue";
+import FieldInput from "@/components/other/inputs/FieldInput.vue";
+import IconButton from "@/components/other/buttons/IconButton.vue";
+import DateInput from "@/components/other/inputs/DateInput.vue";
+import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
+
+import { DoseNumbers, VaccineDose } from "@/utils/cards/card";
+import Brands from "@/utils/cards/brands";
 import {
   flaskOutline as doseNumberIcon,
   extensionPuzzleOutline as vaccineBrandIcon,
@@ -85,24 +97,52 @@ import {
   gridOutline as lotNumberIcon,
   locationOutline as clinicSiteIcon,
 } from "ionicons/icons";
-import IconButton from "@/components/other/buttons/IconButton.vue";
-import DateInput from "@/components/other/inputs/DateInput.vue";
-
 export default defineComponent({
   name: "Dose",
-  emits: ["removeEditor"],
-  setup() {
-    const tester = ref();
+  emits: ["doseModified", "removeEditor"],
+  setup(props, { emit }) {
+    const doseNumbers = Object.keys(DoseNumbers);
+    const brandNames = new Brands().allBrandsNames;
+    const inputs = ref({
+      doseNumber: "",
+      brand: "",
+      date: "",
+      lot: "",
+      administeredByOrAt: "",
+    });
+    const dose = ref(props.dose);
+    watch(
+      inputs,
+      () => {
+        dose.value = new VaccineDose(inputs.value);
+        emit("doseModified", dose.value);
+      },
+      { deep: true }
+    );
+
+    const DEBUG = true;
     return {
-      addOutline,
+      doseNumbers,
+      brandNames,
+
+      inputs,
+
+      // Icons
       doseNumberIcon,
       vaccineBrandIcon,
       dateIcon,
       lotNumberIcon,
       clinicSiteIcon,
-      tester,
+
       log: console.log,
+      DEBUG,
     };
+  },
+  props: {
+    dose: {
+      type: VaccineDose,
+      required: true,
+    },
   },
   components: {
     IonCard,
@@ -112,6 +152,7 @@ export default defineComponent({
     FieldInput,
     IconButton,
     DateInput,
+    ErrorDetails,
   },
 });
 </script>,

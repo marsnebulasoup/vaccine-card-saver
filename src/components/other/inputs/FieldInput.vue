@@ -86,7 +86,12 @@ export default defineComponent({
       emit
     );
 
-    const inputValue = ref(props.modelValue || "");
+    const inputValue = ref();
+    watch(
+      () => props.modelValue,
+      (curr) => (inputValue.value = curr || ""),
+      { immediate: true }
+    );
     watch(inputValue, (curr) => {
       validateInput(curr);
     });

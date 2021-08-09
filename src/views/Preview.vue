@@ -11,7 +11,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <card></card>
+      <vaccine-card :card="card"></vaccine-card>
     </ion-content>
     <div style="display: flex; flex-flow: nowrap">
       <full-width-button
@@ -21,7 +21,7 @@
         >Back</full-width-button
       >
       <full-width-button
-        @click="router.push('home')"
+        @click="saveCardAndLeave()"
         color="success"
         :iconRight="doneIcon"
         >Done</full-width-button
@@ -37,23 +37,54 @@ import {
   IonPage,
   IonToolbar,
   IonBackButton,
+  IonButtons,
 } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { computed, defineComponent, inject } from "vue";
 import { useRouter } from "vue-router";
 import {
   arrowBack as backIcon,
   arrowForward as doneIcon,
 } from "ionicons/icons";
 import FullWidthButton from "@/components/other/buttons/FullWidthButton.vue";
-import Card from "@/components/card/Card.vue";
+import VaccineCard from "@/components/card/VaccineCard.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
+import { Card, FormatVaccineCard } from "@/utils/cards/card";
+import CardHandler from "@/utils/cards";
 
 export default defineComponent({
   name: "Home",
   inject: ["platform"],
-  setup() {
+  setup(props) {
+    const DEBUG = true;
     const router = useRouter();
-    return { router, backIcon, doneIcon };
+    const cards: CardHandler = inject("CardHandler") as CardHandler;
+    const card = computed(() => {
+      const parsed = JSON.parse(props.unformattedCard) as Card;
+      return FormatVaccineCard(parsed);
+    });
+
+
+    DEBUG && console.log("Card from /editor -> ", card.value);
+
+    const saveCardAndLeave = () => {
+      DEBUG && console.log('Saving card...')
+      cards.addCard(card.value);
+      router.push("home");
+    };
+
+    return {
+      router,
+      card,
+      saveCardAndLeave,
+      backIcon,
+      doneIcon,
+    };
+  },
+  props: {
+    unformattedCard: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     IonContent,
@@ -61,8 +92,9 @@ export default defineComponent({
     IonPage,
     IonToolbar,
     IonBackButton,
+    IonButtons,
     FullWidthButton,
-    Card,
+    VaccineCard,
     WrappableTitle,
   },
 });

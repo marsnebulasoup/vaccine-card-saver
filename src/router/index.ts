@@ -35,6 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/preview',
     name: 'Preview',
     component: Preview,
+    props: true,
     meta: {
       transition: {
         leaving: 'push-to-left',

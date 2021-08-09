@@ -3,7 +3,7 @@
     <ion-card-content>
       <ion-card-title>
         <span class="dose-hashtag">#</span>
-        <span class="dose-number">{{ dose.number }}</span>
+        <span class="dose-number">{{ dose.doseNumber }}</span>
         <span class="vaccine-name">{{ dose.brand }}</span>
       </ion-card-title>
       <div class="personal-info">
