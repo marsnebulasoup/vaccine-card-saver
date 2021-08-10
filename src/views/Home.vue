@@ -1,45 +1,61 @@
 <template>
   <ion-page>
     <ion-header class="ion-no-border" mode="ios" collapse="condense">
-      <ion-toolbar> </ion-toolbar>
+      <ion-toolbar></ion-toolbar>
       <ion-toolbar>
         <wrappable-title>Your Cards</wrappable-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
-      <add-a-card v-if="/*!Cards.length*/ true"></add-a-card>
-
-      <div v-if="DEBUG">
+    <ion-content ref="page" :fullscreen="true">
+      <add-a-card v-if="!cards.allCards.value.length"></add-a-card>
+      <transition-group @enter="enter" @leave="leave" :css="false">
+        <vaccine-card
+          v-for="card in cards.allCards.value"
+          :card="card"
+          :key="card.id"
+        ></vaccine-card>
+      </transition-group>
+      <div v-if="DEBUG" style="margin: 10px;">
         <!-- For debugging the reactive cards array -->
         <button @click="update()">Update</button>
-        <pre>{{ JSON.stringify(cards.allCards.value, null, 2) }}</pre>
+        <button @click="cards.removeAllCards()">Remove All Cards</button>
+        <error-details title="Cards" :data="cards.allCards.value" />
       </div>
+      <fab @click="router.push('editor')" />
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonToolbar } from "@ionic/vue";
-import { defineComponent, inject } from "vue";
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonToolbar,
+  onIonViewDidEnter,
+} from "@ionic/vue";
+import { defineComponent, inject, ref } from "vue";
 import { useRouter } from "vue-router";
 import AddACard from "@/components/home/AddACard.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
-import { DoseNumbers } from "@/utils/cards/card";
+import { DoseNumbers } from "@/utils/other/DoseNumbersHandler";
 import CardHandler from "@/utils/cards";
+import VaccineCard from "@/components/card/VaccineCard.vue";
+import Fab from "@/components/other/Fab.vue";
+import ListAnimations from "@/utils/animations/list";
+import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export default defineComponent({
   name: "Home",
   props: {
     id: {
-      type: Number
-    }    
+      type: Number,
+    },
   },
-  setup() {    
+  setup() {
     const cards: CardHandler = inject("CardHandler") as CardHandler;
-    const router = useRouter();    
-
-    
+    const router = useRouter();
 
     // For debugging the reactive Cards array
     // console.log(Cards.value);
@@ -57,7 +73,7 @@ export default defineComponent({
         patientNumber: "2837529873894",
         doses: [
           {
-            doseNumber: '1' as DoseNumbers,
+            doseNumber: "1" as DoseNumbers,
             brand: "Pfizer",
             date: "",
             dateFormatted: "5/12/21",
@@ -67,7 +83,12 @@ export default defineComponent({
         ],
       });
     };
-    return { router, update, cards, DEBUG };
+    const page = ref();
+    onIonViewDidEnter(() => page.value.$el.scrollToTop(500));
+    return { router, page, update, cards, DEBUG };
+  },
+  methods: {
+    ...ListAnimations,
   },
   components: {
     IonContent,
@@ -76,6 +97,9 @@ export default defineComponent({
     IonToolbar,
     AddACard,
     WrappableTitle,
+    VaccineCard,
+    Fab,
+    ErrorDetails,
   },
 });
 </script>

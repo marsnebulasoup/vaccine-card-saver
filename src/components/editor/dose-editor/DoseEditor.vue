@@ -88,7 +88,7 @@ import IconButton from "@/components/other/buttons/IconButton.vue";
 import DateInput from "@/components/other/inputs/DateInput.vue";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 
-import { DoseNumbers, VaccineDose } from "@/utils/cards/card";
+import { VaccineDose } from "@/utils/cards/card";
 import Brands from "@/utils/cards/brands";
 import {
   flaskOutline as doseNumberIcon,
@@ -97,6 +97,7 @@ import {
   gridOutline as lotNumberIcon,
   locationOutline as clinicSiteIcon,
 } from "ionicons/icons";
+import { DoseNumbers } from "@/utils/other/DoseNumbersHandler";
 export default defineComponent({
   name: "Dose",
   emits: ["doseModified", "removeEditor"],

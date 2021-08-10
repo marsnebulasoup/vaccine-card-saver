@@ -1,6 +1,7 @@
 <template>
   <section>
     <error-details v-if="DEBUG" title="Doses" :data="doses" />
+    <error-details v-if="DEBUG" title="Dose Numbers" :data="doseNumbers" />
     <transition-group @enter="enter" @leave="leave" :css="false">
       <dose-editor
         v-for="(dose, index) in doses"
@@ -29,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, provide, Ref, ref, watch } from "vue";
+import { defineComponent, inject, Ref, ref, watch } from "vue";
 import AddADose from "./AddADose.vue";
 import DoseEditor from "./DoseEditor.vue";
 import ListAnimations from "@/utils/animations/list";
@@ -38,19 +39,28 @@ import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
 import { Card, VaccineDose } from "@/utils/cards/card";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
+import {
+  CreateNewDoseNumberArrayForChipSelector,
+  ManageDisabledDoseNumbers,
+} from "@/utils/other/DoseNumbersHandler";
 
 export default defineComponent({
   name: "Doses",
   setup() {
     const MAX_DOSES = 4;
-
-    const doses = ref<{ id: number; dose: VaccineDose }[]>([]); // TODO: 👈 change type here
+    // TODO: actually type out this 👇 type so it can be imported in DoseNumberHandler.ts also
+    const doses = ref<{ id: number; dose: VaccineDose }[]>([]); 
     const content: Ref<Card> = inject("content") as Ref<Card>;
 
+    const doseNumbers = CreateNewDoseNumberArrayForChipSelector();
+    // 👉👉👉 implement the chip selector to work with this 👆👆
     watch(
       doses,
-      (curr) => {
-        content.value.doses = curr.map((dose) => dose.dose.FormattedDose);
+      (doses) => {
+        if (doses.length) {
+          content.value.doses = doses.map((dose) => dose.dose.FormattedDose);
+          ManageDisabledDoseNumbers(doses, doseNumbers);
+        }
       },
       { deep: true }
     );
@@ -59,7 +69,7 @@ export default defineComponent({
     watch(
       () => content.value.doses.length,
       (dosesExist) => {
-        if(!dosesExist) doses.value = []
+        if (!dosesExist) doses.value = [];
       },
       { deep: true }
     );
@@ -128,6 +138,7 @@ export default defineComponent({
       validatorErrorMsg,
       validatorErrorEl,
       DEBUG,
+      doseNumbers,
       log: console.log,
     };
   },

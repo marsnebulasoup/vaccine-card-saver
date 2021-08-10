@@ -22,6 +22,10 @@ ion-toolbar {
   --background: #ffffffa8
 }
 
+ion-header ion-toolbar:first-of-type {
+  margin-top: var(--ion-safe-area-top);
+}
+
 .hide-item-click-animation {
   --padding-end: 10px;
   /* hides click animation on the ion-item element when the input is clicked */

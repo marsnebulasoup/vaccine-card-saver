@@ -27,7 +27,7 @@ class CardHandler {
     // 👉👉👉 look into duplicates being made here...but that's probably not an issue. also display the card on the home screen when it is added
     if (card.id) this.editCard(card) // for new cards, the id should be 0, since it'll be changed here
     card.id = this.generateId()
-    this.cards.value.push(
+    this.cards.value.unshift(
       FormatVaccineCard(card)
     );
   }
@@ -43,6 +43,10 @@ class CardHandler {
 
   removeCard(id: number): void {
     this.cards.value = this.cards.value.filter(card => card.id !== id)
+  }
+
+  removeAllCards() {
+    this.cards.value = []
   }
 
   generateId(): number {

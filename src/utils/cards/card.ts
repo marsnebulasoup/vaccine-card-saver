@@ -1,5 +1,6 @@
 import Brands from './brands';
 import { capitalizeFirstLetter, DateUtils } from "@/utils/other"
+import { DoseNumbers } from '../other/DoseNumbersHandler';
 
 
 export function FormatVaccineCard(card: Card) {
@@ -26,11 +27,7 @@ export function FormatVaccineCard(card: Card) {
   return card
 }
 
-export enum DoseNumbers {
-  First = "1",
-  Second = "2",
-  Other = "Other"
-}
+
 
 export class VaccineDose {
   doseNumber: DoseNumbers;

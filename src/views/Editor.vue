@@ -11,7 +11,7 @@
         <wrappable-title>Add a Card</wrappable-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
+    <ion-content ref="page" :fullscreen="true">
       <error-details v-if="DEBUG" title="Content" :data="content" />
       <error-details v-if="DEBUG" title="Validation Errors" :data="errors" />
 
@@ -47,6 +47,7 @@ import {
   IonButtons,
   IonBackButton,
   onIonViewWillEnter,
+  onIonViewDidEnter,
 } from "@ionic/vue";
 import { defineComponent, inject, provide, Ref, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -99,6 +100,8 @@ export default defineComponent({
           doses: [],
         };
     });
+    const page = ref();
+    onIonViewDidEnter(() => { if(resetEditor.value) page.value.$el.scrollToTop(500) })
 
     const errorMsg = ref();
 
@@ -114,6 +117,7 @@ export default defineComponent({
     const DEBUG = true;
     return {
       DEBUG,
+      page,
       router,
       content,
       errors,
