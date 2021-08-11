@@ -1,8 +1,10 @@
 import { createAnimation } from "@ionic/vue";
 
+const DEBUG = false;
+
 export default {
   enter(el: HTMLElement, done: Function) {
-    console.log("Called enter()")
+    DEBUG && console.log("Called enter()")
     createAnimation()
       .addElement(el)
       .duration(175)
@@ -12,7 +14,7 @@ export default {
       .play().then(() => done());
   },
   leave(el: HTMLElement, done: Function) {
-    console.log("Called leave()")
+    DEBUG && console.log("Called leave()")
     createAnimation()
       .addElement(el)
       .duration(150)

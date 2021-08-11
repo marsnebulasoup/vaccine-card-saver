@@ -1,6 +1,11 @@
 <template>
   <ion-page>
-    <ion-header class="ion-no-border" mode="ios" collapse="condense">
+    <ion-header
+      :class="{ invisible: isInViewerMode }"
+      class="ion-no-border"
+      mode="ios"
+      collapse="condense"
+    >
       <ion-toolbar></ion-toolbar>
       <ion-toolbar>
         <wrappable-title>Your Cards</wrappable-title>
@@ -13,15 +18,32 @@
           v-for="card in cards.allCards.value"
           :card="card"
           :key="card.id"
+          @click="openOrCloseViewerMode(card, $event)"
+          :class="{
+            'hide-card': shouldHideCard(card),
+            'hide-card-completely': shouldHideCardCompletely(card),
+          }"
         ></vaccine-card>
       </transition-group>
-      <div v-if="DEBUG" style="margin: 10px;">
+      <viewer-mode-tools
+        :isInViewerMode="isInViewerMode"
+        :card="cardInViewerMode"
+      ></viewer-mode-tools>
+
+      <div
+        :class="{ invisible: isInViewerMode }"
+        v-if="DEBUG"
+        style="margin: 10px"
+      >
         <!-- For debugging the reactive cards array -->
         <button @click="update()">Update</button>
         <button @click="cards.removeAllCards()">Remove All Cards</button>
         <error-details title="Cards" :data="cards.allCards.value" />
       </div>
-      <fab @click="router.push('editor')" />
+      <fab
+        :class="{ invisible: isInViewerMode }"
+        @click="router.push('editor')"
+      />
     </ion-content>
   </ion-page>
 </template>
@@ -44,6 +66,9 @@ import VaccineCard from "@/components/card/VaccineCard.vue";
 import Fab from "@/components/other/Fab.vue";
 import ListAnimations from "@/utils/animations/list";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
+import { ViewerModeHandler } from "@/utils/other/ViewerModeHandler";
+
+import ViewerModeTools from "@/components/home/ViewerModeTools.vue";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export default defineComponent({
@@ -63,9 +88,9 @@ export default defineComponent({
     const update = () => {
       cards.addCard({
         id: 3,
-        lastName: "Smith",
-        firstName: "John",
-        middleInitial: "K",
+        lastName: "Klown",
+        firstName: "George",
+        middleInitial: "D",
         name: "",
         dob: "2021-07-31T17:01:25.051Z",
         dobFormatted: "",
@@ -80,12 +105,29 @@ export default defineComponent({
             administeredByOrAt: "CVS9999",
             lot: "KS2384",
           },
+          {
+            doseNumber: "2" as DoseNumbers,
+            brand: "Pfizer",
+            date: "",
+            dateFormatted: "6/2/21",
+            administeredByOrAt: "CVS9999",
+            lot: "KS2384",
+          },
         ],
       });
     };
+
     const page = ref();
+
     onIonViewDidEnter(() => page.value.$el.scrollToTop(500));
-    return { router, page, update, cards, DEBUG };
+    return {
+      router,
+      page,
+      update,
+      cards,
+      DEBUG,
+      ...ViewerModeHandler(page),
+    };
   },
   methods: {
     ...ListAnimations,
@@ -100,6 +142,7 @@ export default defineComponent({
     VaccineCard,
     Fab,
     ErrorDetails,
+    ViewerModeTools,
   },
 });
 </script>
@@ -111,5 +154,17 @@ export default defineComponent({
 
 ion-title {
   font-weight: 800;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+.hide-card {
+  visibility: hidden;
+}
+
+.hide-card-completely {
+  display: none;
 }
 </style>

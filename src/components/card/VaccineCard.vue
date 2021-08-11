@@ -1,5 +1,5 @@
 <template>
-  <ion-card mode="ios">
+  <ion-card mode="ios" data-is-vaccine-card>
     <ion-card-content>
       <div class="vaccine-card">
         <div class="personal-info">
