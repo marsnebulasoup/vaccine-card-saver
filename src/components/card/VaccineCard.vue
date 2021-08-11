@@ -10,10 +10,7 @@
                   ? "Fully Vaccinated"
                   : "Not Fully Vaccinated"
               }}</caption-text>
-              <wrappable-title
-                style="font-size: 33px; padding: 0; color: black"
-                >{{ card.name }}</wrappable-title
-              >
+              <wrappable-title size="30" noPadding>{{ card.name }}</wrappable-title>
             </div>
           </div>
           <div class="text-end items">
@@ -33,7 +30,6 @@
           :key="index"
           :dose="dose"
         ></dose-card>
-        <!-- 👉👉👉 implement props in <dose-card> -->
       </div>
     </ion-card-content>
   </ion-card>

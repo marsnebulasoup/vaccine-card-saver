@@ -31,8 +31,8 @@ class Brands {
           const brands = JSON.parse(resp.value)
           if (brands.length) this.brands.value = brands
         }
-        else console.log('Saved brands not found')
-      else console.log('Saved brands not object')
+        else DEBUG && console.log('Saved brands not found')
+      else DEBUG && console.log('Saved brands not object')
     });
   }
 
@@ -44,8 +44,17 @@ class Brands {
     return this.brands.value.map(brand => brand.name) as ReadonlyArray<string>;
   }
 
+  get allBrandsForChipSelector() {
+    return this.allBrandsNames.map(brand => {
+      return {
+        value: brand,
+        disabled: false
+      }
+    })
+  }
+
   saveBrands() {
-    if(DEBUG) console.log('Brands changed, saving them')
+    DEBUG && console.log('Brands changed, saving them')
 
     Storage.set({
       key: 'brands',

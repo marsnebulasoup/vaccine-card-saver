@@ -40,7 +40,7 @@ export const CreateNewDoseNumberArrayForChipSelector = () => {
 }
 
 export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose }[], doseNumbers: Ref<DoseNumberForChipSelector[]>) => {
-  const DEBUG = true;
+  const DEBUG = false;
   
   const selectedDoseNumbers = doses.map((dose) => dose.dose.doseNumber);
   DEBUG && console.log("Selected Dose Numbers -> ", selectedDoseNumbers);

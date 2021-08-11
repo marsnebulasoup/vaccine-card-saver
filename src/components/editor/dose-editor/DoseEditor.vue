@@ -2,6 +2,7 @@
   <ion-card mode="ios">
     <ion-card-content>
       <error-details v-if="DEBUG" title="Inputs" :data="inputs" />
+      <error-details v-if="DEBUG" title="Dose Numbers" :data="doseNumbers" />
       <ion-card-title>New Dose</ion-card-title>
       <chip-selector
         name="Dose Number"
@@ -9,7 +10,6 @@
         v-model="inputs.doseNumber"
         :items="doseNumbers"
         :icon="doseNumberIcon"
-        type="single"
         color="primary"        
         >Dose</chip-selector
       >
@@ -17,9 +17,8 @@
         name="Brand"
         :required="true"
         v-model="inputs.brand"
-        :items="brandNames"
+        :items="brandNames.allBrandsForChipSelector"
         :icon="vaccineBrandIcon"
-        type="single"
         color="success"       
         >Brand</chip-selector
       >
@@ -77,6 +76,8 @@
 <script lang="ts">
 import {
   defineComponent,
+  inject,
+  Ref,
   ref,
   watch,
 } from "vue";
@@ -89,7 +90,6 @@ import DateInput from "@/components/other/inputs/DateInput.vue";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 
 import { VaccineDose } from "@/utils/cards/card";
-import Brands from "@/utils/cards/brands";
 import {
   flaskOutline as doseNumberIcon,
   extensionPuzzleOutline as vaccineBrandIcon,
@@ -97,13 +97,14 @@ import {
   gridOutline as lotNumberIcon,
   locationOutline as clinicSiteIcon,
 } from "ionicons/icons";
-import { DoseNumbers } from "@/utils/other/DoseNumbersHandler";
 export default defineComponent({
   name: "Dose",
   emits: ["doseModified", "removeEditor"],
   setup(props, { emit }) {
-    const doseNumbers = Object.keys(DoseNumbers);
-    const brandNames = new Brands().allBrandsNames;
+    const doseNumbers = inject("DoseNumbers") as Ref;    
+    const brandNames = inject("VaccineBrands") as Ref;
+    
+    const dose = ref(props.dose);
     const inputs = ref({
       doseNumber: "",
       brand: "",
@@ -111,7 +112,6 @@ export default defineComponent({
       lot: "",
       administeredByOrAt: "",
     });
-    const dose = ref(props.dose);
     watch(
       inputs,
       () => {
@@ -143,7 +143,7 @@ export default defineComponent({
     dose: {
       type: VaccineDose,
       required: true,
-    },
+    }
   },
   components: {
     IonCard,
@@ -156,8 +156,7 @@ export default defineComponent({
     ErrorDetails,
   },
 });
-</script>,
-    ItemSelector
+</script>
 
 <style scoped>
 ion-card-title {

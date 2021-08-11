@@ -20,12 +20,12 @@ export const DateUtils = {
 }
 
 export const ScrollUtils = () => {
+  const DEBUG = false;
   const scrollIntoView = require('scroll-into-view');
 
   return {
     scrollInput: (ev: any, direction: "x" | "y", time = 300, callback?: Function) => {
-      console.log("Scrolling");
-      // if (!ev.target) return
+      DEBUG && console.log("Scrolling to ", ev);
       scrollIntoView(ev.target || ev, {
         time,
         align: {
@@ -38,9 +38,10 @@ export const ScrollUtils = () => {
 }
 
 export const InputValidators = (pattern: Ref, status: Ref<"normal" | "pass" | "fail">, emit: Function) => {
+  const DEBUG = false;
   return {
     validateInput: (input: string) => {
-      console.log(input)
+      DEBUG && console.log("Input: ", input)
       if (!input.length) {
         emit("update:modelValue", input);
         status.value = "normal"

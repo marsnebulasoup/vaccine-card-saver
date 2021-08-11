@@ -24,10 +24,11 @@
     >
       <bbq-chip
         v-for="(item, index) in items"
-        :label="item"
+        :label="item.value"
         :key="index"
         :color="color"
-        :selected="selected.includes(item)"
+        :disabled="item.disabled && selected !== item.value"
+        :selected="selected.includes(item.value)"
         @click="handleClicks(item, $event)"
       ></bbq-chip>
     </div>
@@ -56,23 +57,36 @@ import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
 export default defineComponent({
   name: "ChipSelector",
   emits: ["update:modelValue"],
-  setup(props, context) {
-    const item = ref();
-    const selected = ref<any>([]);
+  setup(props, { emit }) {
+    const DEBUG = false;
 
-    const computeSelected = (item: any) => {
-      if (props.type === "single") {
-        selected.value.includes(item)
-          ? (selected.value = [])
-          : (selected.value = [item]);
-        context.emit("update:modelValue", selected.value[0] || "");
-      } else if (props.type === "multi") {
-        selected.value.includes(item)
-          ? (selected.value = selected.value.filter((i: any) => i !== item))
-          : selected.value.push(item);
-        context.emit("update:modelValue", selected);
+    const item = ref();
+    const selected = ref("");
+
+    const computeSelected = ({
+      value,
+      disabled,
+    }: {
+      value: string;
+      disabled: boolean;
+    }) => {
+      // if disabled but already selected, unselect on click
+      if (disabled && selected.value === value) {
+        DEBUG && console.log("Already selected and disabled, unselecting");
+        selected.value = "";
       }
-      
+      // if not disabled, unselect if already selected or select if unselected
+      else if (!disabled) {
+        DEBUG && console.log("Not disabled,");
+        if (selected.value === value) {
+          selected.value = "";
+          DEBUG && console.log("...unselecting");
+        } else {
+          selected.value = value;
+          DEBUG && console.log("...selecting")
+        }
+      }
+      emit("update:modelValue", selected.value);
     };
 
     const { scrollInput } = ScrollUtils();
@@ -127,11 +141,11 @@ export default defineComponent({
       required: true,
     },
     modelValue: {
-      type: [Array, String],
+      type: String,
     },
     items: {
       type: Array,
-      required: true
+      required: true,
     },
     required: {
       type: Boolean,
@@ -139,10 +153,6 @@ export default defineComponent({
     },
     errorMsg: {
       type: String,
-    },
-    type: {
-      type: String,
-      default: "single", // can be multi also to select multiple items
     },
     color: {
       type: String,
@@ -170,8 +180,7 @@ export default defineComponent({
 });
 </script>
 
-,
-    PopoverWrapper<style scoped>
+<style scoped>
 ion-icon {
   padding-right: 10px;
 }

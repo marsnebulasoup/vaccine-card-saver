@@ -2,6 +2,8 @@ import Brands from './brands';
 import { capitalizeFirstLetter, DateUtils } from "@/utils/other"
 import { DoseNumbers } from '../other/DoseNumbersHandler';
 
+const BRANDS = new Brands();
+
 
 export function FormatVaccineCard(card: Card) {
   let { id, lastName, firstName, middleInitial, dob, patientNumber, fullyVaccinated, doses } = card
@@ -30,7 +32,7 @@ export function FormatVaccineCard(card: Card) {
 
 
 export class VaccineDose {
-  doseNumber: DoseNumbers;
+  doseNumber: string;
   brand: string;
   date: string;
   lot: string;
@@ -41,8 +43,8 @@ export class VaccineDose {
       { doseNumber: string; brand: string; date: string; administeredByOrAt: string; lot: string }
   ) {
     // TODO: 👉👉👉 the chip selector for dose numbers have fields "First", "Second", "Other", which are not in the type "1" | "2" | "Other" ...enums might be better for this?
-    // also stress test this af
-    this.doseNumber = Object.keys(DoseNumbers).includes(doseNumber) ? DoseNumbers[doseNumber as keyof typeof DoseNumbers] : DoseNumbers.Other;
+    // also stress test this af   
+    this.doseNumber = this.processDoseNumber(doseNumber) || "N/A"
     this.brand = this.processBrands(brand)
 
     const isDate = DateUtils.isDate(date);
@@ -53,14 +55,19 @@ export class VaccineDose {
     this.lot = lot || "N/A"
   }
 
+  processDoseNumber(doseNumber: string) {
+    return Object.keys(DoseNumbers).includes(doseNumber)
+      ? DoseNumbers[doseNumber as keyof typeof DoseNumbers]
+      : undefined
+  }
+
   processBrands(brand: string) {
-    const brands = new Brands();
-    return brands.isBrand(brand) ? brand : "N/A"
+    return BRANDS.isBrand(brand) ? brand : "N/A"
   }
 
   get FormattedDose() {
     const dose: Dose = {
-      doseNumber: this.doseNumber,
+      doseNumber: this.doseNumber !== "N/A" ? this.doseNumber as DoseNumbers : DoseNumbers.Other,
       brand: this.brand,
       date: this.date,
       dateFormatted: this.dateFormatted,
@@ -74,7 +81,7 @@ export class VaccineDose {
 
 // Interfaces
 export interface Card {
-  id: number; // TODO: figure out how to work with these ids
+  id: number; 
   lastName: string;
   firstName: string;
   middleInitial: string;

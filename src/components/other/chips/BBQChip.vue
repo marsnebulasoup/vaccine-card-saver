@@ -3,7 +3,7 @@
   <ion-chip
     class="no-left-margin bbq-chip"
     :class="{ selected: selected }"
-    
+    :disabled="disabled"
     :outline="true"
     :color="color"
   >
@@ -31,6 +31,10 @@ export default defineComponent({
     selected: {
       type: Boolean,
       default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     color: {
       type: String,

@@ -1,5 +1,6 @@
 <template>
   <ion-grid style="margin-bottom: 30px" class="ion-no-padding ion-no-margin">
+    <!-- TODO: Add help button -->
     <ion-row>
       <ion-col>
         <field-input
@@ -88,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, inject, watch } from "vue";
+import { defineComponent, Ref, inject } from "vue";
 import { IonGrid, IonRow, IonCol } from "@ionic/vue";
 import { person, calendar, documentText } from "ionicons/icons";
 import FieldInput from "@/components/other/inputs/FieldInput.vue";
@@ -99,7 +100,6 @@ export default defineComponent({
   name: "PersonalInfoForm",
   setup() {
     const content: Ref<Card> = inject("content") as Ref<Card>;
-    watch(content, (curr) => console.log(curr));
     return { person, content, calendar, documentText };
   },
   components: {

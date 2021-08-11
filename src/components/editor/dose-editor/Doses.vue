@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Ref, ref, watch } from "vue";
+import { defineComponent, inject, provide, Ref, ref, watch } from "vue";
 import AddADose from "./AddADose.vue";
 import DoseEditor from "./DoseEditor.vue";
 import ListAnimations from "@/utils/animations/list";
@@ -53,6 +53,7 @@ export default defineComponent({
     const content: Ref<Card> = inject("content") as Ref<Card>;
 
     const doseNumbers = CreateNewDoseNumberArrayForChipSelector();
+    provide('DoseNumbers', doseNumbers)
     // 👉👉👉 implement the chip selector to work with this 👆👆
     watch(
       doses,
