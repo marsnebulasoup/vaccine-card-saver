@@ -1,7 +1,6 @@
 <template>
   <ion-card
-    mode="ios"
-    class="viewer-mode-tools"
+    mode="ios"    
     :style="`background: rgba(var(--${color}), ${opacity})`"
   >
     <ion-card-header>
@@ -27,6 +26,7 @@ import {
   IonCardContent,
   IonCardTitle,
   IonCardSubtitle,
+  IonText,
 } from "@ionic/vue";
 import { arrowForward } from "ionicons/icons";
 import { defineComponent } from "vue";
@@ -65,6 +65,7 @@ export default defineComponent({
     IonCardSubtitle,
     IonCardTitle,
     CaptionText,
+    IonText
   },
 });
 </script>

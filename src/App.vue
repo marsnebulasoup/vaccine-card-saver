@@ -25,6 +25,7 @@ export default defineComponent({
 
     const resetEditor = ref(true);
     router.beforeEach((to, from, next) => {
+      console.log(`Routing from `, from, " to ", to);
       if (to.name === "Editor" && from.name == "Preview")
         resetEditor.value = false;
       else resetEditor.value = true;
@@ -35,6 +36,7 @@ export default defineComponent({
     provide("VaccineBrands", new Brands());
     provide("platform", isPlatform("ios") ? "ios" : "md");
     provide("resetEditor", resetEditor);
+    provide("editingCardId", ref<number>())
   },
 });
 </script>

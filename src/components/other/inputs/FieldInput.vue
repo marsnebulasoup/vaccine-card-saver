@@ -70,6 +70,7 @@ import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 export default defineComponent({
   name: "FieldInput",
   setup(props, { emit }) {
+    const DEBUG = false;
     const item = ref();
 
     const isPopoverOpen = ref(false);
@@ -90,12 +91,20 @@ export default defineComponent({
     const inputValue = ref();
     watch(
       () => props.modelValue,
-      (curr) => (inputValue.value = curr || ""),
+      (curr) => {
+        DEBUG && console.log(`Setting inputValue in ${props.name} to "${curr}"`);
+        inputValue.value = curr || "";
+      },
       { immediate: true }
     );
-    watch(inputValue, (curr) => {
-      validateInput(curr);
-    });
+    watch(
+      inputValue,
+      (curr) => {
+        DEBUG && console.log(`Validating inputValue "${curr}" in ${props.name} `);
+        validateInput(curr);
+      },
+      { immediate: true }
+    );
 
     const errors: Ref<Errors> = inject("errors") as Ref<Errors>;
 
@@ -110,6 +119,7 @@ export default defineComponent({
     watch(
       status,
       (curr) => {
+        DEBUG && console.log(`Status changed in ${props.name} to "${curr}"`);
         if (curr === "normal" && props.required)
           addError(`${props.name} is required.`);
         else if (curr === "fail")

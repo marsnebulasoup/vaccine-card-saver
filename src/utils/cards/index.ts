@@ -3,7 +3,7 @@ import { Card, FormatVaccineCard } from './card';
 import Cards from './cards';
 
 
-const DEBUG = false;
+const DEBUG = true;
 
 class CardHandler {
   cards: Ref<Card[]>;
@@ -19,13 +19,28 @@ class CardHandler {
     return this.cards.value.find(card => card.id === id);
   }
 
+  getCardForEditing(id: number) {
+    const card = JSON.parse(JSON.stringify(this.getCard(id)));
+    if (card) {
+      card.lastName = card.lastName.replace("N/A", "");
+      card.firstName = card.firstName.replace("N/A", "");
+      card.middleInitial = card.middleInitial.slice(0, 1)
+      card.dob = card.dob.replace("N/A", "")
+      card.patientNumber = card.patientNumber.replace("N/A", "")
+    }
+    return card;
+  }
+
   getCardIndex(id: number): number {
     return this.cards.value.findIndex(card => card.id === id);
   }
 
   addCard(card: Card): void {
-    // 👉👉👉 look into duplicates being made here...but that's probably not an issue. also display the card on the home screen when it is added
-    if (card.id) this.editCard(card) // for new cards, the id should be 0, since it'll be changed here
+    if (card.id !== 0) {
+      this.editCard(card)
+      return
+    } // for new cards, the id should be 0, since it'll be changed here
+    DEBUG && console.log(`Adding card with name ${card.name}`)
     card.id = this.generateId()
     this.cards.value.unshift(
       FormatVaccineCard(card)
@@ -33,6 +48,7 @@ class CardHandler {
   }
 
   editCard(card: Card): boolean {
+    DEBUG && console.log(`Editing card with name ${card.name}, not adding it`)
     const index = this.getCardIndex(card.id);
     if (~index) {
       this.cards.value[index] = FormatVaccineCard(card)

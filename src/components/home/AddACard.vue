@@ -6,7 +6,7 @@
       >
     </ion-card-header>
     <ion-card-content>
-      <icon-button @click="router.push('editor')" :iconRight="arrowForward"
+      <icon-button @click="$emit('addCard')" :iconRight="arrowForward"
         >Add one now</icon-button
       >
     </ion-card-content>
@@ -27,6 +27,7 @@ import IconButton from "../other/buttons/IconButton.vue";
 
 export default defineComponent({
   name: "AddACard",
+  emits: ['addCard'],
   setup() {
     return {
       router: useRouter(),

@@ -44,15 +44,15 @@ export class VaccineDose {
   ) {
     // TODO: 👉👉👉 the chip selector for dose numbers have fields "First", "Second", "Other", which are not in the type "1" | "2" | "Other" ...enums might be better for this?
     // also stress test this af   
-    this.doseNumber = this.processDoseNumber(doseNumber) || "N/A"
+    this.doseNumber = doseNumber //this.processDoseNumber(doseNumber) || "N/A"
     this.brand = this.processBrands(brand)
 
     const isDate = DateUtils.isDate(date);
-    this.date = isDate ? isDate.toISOString() : "N/A";
+    this.date = isDate ? isDate.toISOString() : "";
 
     this.dateFormatted = DateUtils.formatDate(date)
-    this.administeredByOrAt = administeredByOrAt;
-    this.lot = lot || "N/A"
+    this.administeredByOrAt = administeredByOrAt || "";
+    this.lot = lot || "";
   }
 
   processDoseNumber(doseNumber: string) {
@@ -62,17 +62,18 @@ export class VaccineDose {
   }
 
   processBrands(brand: string) {
-    return BRANDS.isBrand(brand) ? brand : "N/A"
+    return BRANDS.isBrand(brand) ? brand : ""
   }
 
   get FormattedDose() {
+    const processedDoseNumber = this.processDoseNumber(this.doseNumber);
     const dose: Dose = {
-      doseNumber: this.doseNumber !== "N/A" ? this.doseNumber as DoseNumbers : DoseNumbers.Other,
-      brand: this.brand,
-      date: this.date,
+      doseNumber: processedDoseNumber ? processedDoseNumber : DoseNumbers.Other,//this.doseNumber !== "N/A" ? this.doseNumber as DoseNumbers : DoseNumbers.Other,
+      brand: this.brand || "N/A",
+      date: this.date || "N/A",
       dateFormatted: this.dateFormatted,
-      administeredByOrAt: this.administeredByOrAt,
-      lot: this.lot
+      administeredByOrAt: this.administeredByOrAt || "N/A",
+      lot: this.lot || "N/A"
     }
     return dose;
   }

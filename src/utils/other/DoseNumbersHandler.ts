@@ -1,10 +1,16 @@
 import { Ref, ref } from "vue";
-import { VaccineDose } from "../cards/card";
+import { Dose, VaccineDose } from "../cards/card";
 
 export enum DoseNumbers {
   First = "1",
   Second = "2",
   Other = "Other"
+}
+
+export const InvertedDoseNumbers = {
+  [`${DoseNumbers.First}`]: "First",
+  [`${DoseNumbers.Second}`]: "Second",
+  [`${DoseNumbers.Other}`]: "Other"
 }
 
 export const DoseNumbersInfo: {
@@ -27,6 +33,18 @@ export const DoseNumbersInfo: {
   },
 }
 
+export const FormatDosesForEditing = (doses: Dose[]) => {
+  const formatted: { id: number; dose: VaccineDose }[] = []
+  doses.forEach((dose: any, index) => {
+    dose.doseNumber = InvertedDoseNumbers[dose.doseNumber]
+    formatted.push({
+      id: index,
+      dose: new VaccineDose(dose)
+    })
+  })
+  return formatted
+}
+
 export const CreateNewDoseNumberArrayForChipSelector = () => {
   const doseNumbers = ref<DoseNumberForChipSelector[]>(
     Object.keys(DoseNumbersInfo).map((key) => {
@@ -41,7 +59,7 @@ export const CreateNewDoseNumberArrayForChipSelector = () => {
 
 export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose }[], doseNumbers: Ref<DoseNumberForChipSelector[]>) => {
   const DEBUG = false;
-  
+
   const selectedDoseNumbers = doses.map((dose) => dose.dose.doseNumber);
   DEBUG && console.log("Selected Dose Numbers -> ", selectedDoseNumbers);
 
@@ -51,17 +69,17 @@ export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose
     DEBUG && console.log("Current doseNumberTypeValue -> ", doseNumberTypeValue);
 
     const amtOfDoseNumberType = selectedDoseNumbers.filter(
-      (d) => d === doseNumberTypeValue
+      (d) => d === doseNumberType
     ).length;
     DEBUG && console.log("amtOfDoseNumberType -> ", amtOfDoseNumberType);
 
     const maxAmtOfDoseNumberType =
       DoseNumbersInfo[doseNumberType].numberOfTimesThisCanBeRepeated;
-      DEBUG && console.log("maxAmtOfDoseNumberType -> ", maxAmtOfDoseNumberType);
+    DEBUG && console.log("maxAmtOfDoseNumberType -> ", maxAmtOfDoseNumberType);
 
     const disableDoseType =
       amtOfDoseNumberType === maxAmtOfDoseNumberType || false;
-      DEBUG && console.log("disabledDoseType -> ", disableDoseType);
+    DEBUG && console.log("disabledDoseType -> ", disableDoseType);
 
     doseNumbers.value = doseNumbers.value.map((d) => {
       if (d.value === doseNumberType) d.disabled = disableDoseType;

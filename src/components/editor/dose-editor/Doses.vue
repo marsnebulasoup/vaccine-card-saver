@@ -30,17 +30,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, provide, Ref, ref, watch } from "vue";
+import {
+  defineComponent,
+  inject,
+  onMounted,
+  provide,
+  Ref,
+  ref,
+  watch,
+} from "vue";
 import AddADose from "./AddADose.vue";
 import DoseEditor from "./DoseEditor.vue";
 import ListAnimations from "@/utils/animations/list";
 import scrollIntoView from "scroll-into-view";
 import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
-import { Card, VaccineDose } from "@/utils/cards/card";
+import { Card, Dose, VaccineDose } from "@/utils/cards/card";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 import {
   CreateNewDoseNumberArrayForChipSelector,
+  FormatDosesForEditing,
   ManageDisabledDoseNumbers,
 } from "@/utils/other/DoseNumbersHandler";
 
@@ -49,12 +58,12 @@ export default defineComponent({
   setup() {
     const MAX_DOSES = 4;
     // TODO: actually type out this 👇 type so it can be imported in DoseNumberHandler.ts also
-    const doses = ref<{ id: number; dose: VaccineDose }[]>([]); 
+    const doses = ref<{ id: number; dose: VaccineDose }[]>([]);
     const content: Ref<Card> = inject("content") as Ref<Card>;
 
     const doseNumbers = CreateNewDoseNumberArrayForChipSelector();
-    provide('DoseNumbers', doseNumbers)
-    // 👉👉👉 implement the chip selector to work with this 👆👆
+    provide("DoseNumbers", doseNumbers);
+
     watch(
       doses,
       (doses) => {
@@ -66,41 +75,47 @@ export default defineComponent({
       { deep: true }
     );
 
-    // Reset doses when view is re-navigated to
-    watch(
-      () => content.value.doses.length,
-      (dosesExist) => {
-        if (!dosesExist) doses.value = [];
-      },
-      { deep: true }
-    );
-
     const count = ref(0);
-    const addADose = () => {
+    const addADose = (dose?: Dose) => {
       doses.value.push({
         id: count.value,
         dose: new VaccineDose({
-          doseNumber: "",
-          brand: "",
-          date: "",
-          lot: "",
-          administeredByOrAt: "",
+          doseNumber: dose?.doseNumber || "",
+          brand: dose?.brand || "",
+          date: dose?.date || "",
+          lot: dose?.lot || "",
+          administeredByOrAt: dose?.administeredByOrAt || "",
         }),
       });
-      console.log(doses.value);
       count.value++;
 
-      // animate scroll
-      setTimeout(() => {
-        // let the animation start playing before starting the scroll,
-        // or it won't even scroll, because the new dose editor element
-        // can't be located until then.
-        const card = document.querySelector(
-          ".this-is-the-last-dose-editor"
-        ) as HTMLElement;
-        if (card) scrollIntoView(card, { time: 125 });
-      }, 50);
+      // animate scroll but not if adding pre-filled doses, because that's done on the page load
+      dose ||
+        setTimeout(() => {
+          // let the animation start playing before starting the scroll,
+          // or it won't even scroll, because the new dose editor element
+          // can't be located until then.
+          const card = document.querySelector(
+            ".this-is-the-last-dose-editor"
+          ) as HTMLElement;
+          if (card) scrollIntoView(card, { time: 125 });
+        }, 50);
     };
+
+    // Reset doses when view is re-navigated to and load doses if in editing mode
+    onMounted(() => {
+      doses.value = [];
+      count.value = 0;
+      const stop = watch(
+        () => content.value.doses,
+        () => {
+          doses.value = FormatDosesForEditing(content.value.doses);
+          stop();
+        },
+        { deep: true }
+      );
+      content.value.doses.forEach((dose) => console.log(dose));
+    });
 
     const removeADose = (index: number) => {
       console.log(index);

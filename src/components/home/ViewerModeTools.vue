@@ -1,11 +1,22 @@
 <template>
-  <info-card
+  <!-- <info-card
     v-if="isInViewerMode"
+    class="viewer-mode-tools"
     color="blue"
     title="Tools"
-  >Some tools here</info-card>
+  >
+
+  </info-card> -->
+  <!-- 👉👉👉 add a tools panel here...maybe use a fab?  -->
+  <tool-fab
+    @share="handleShare()"
+    @edit="handleEdit()"
+    @delete="handleDelete()"
+    v-if="isInViewerMode"
+  />
   <info-card
     v-else
+    class="viewer-mode-tools"
     subtitle="Tips"
     subtitleColor="success"
     color="green"
@@ -13,17 +24,39 @@
   />
 </template>
 
-<script>
+<script lang="ts">
+import { nudge } from "@/utils/haptics";
 import { arrowForward } from "ionicons/icons";
-import { defineComponent } from "vue";
+import { defineComponent, inject, Ref } from "vue";
 import { useRouter } from "vue-router";
+import ToolFab from "../other/buttons/ToolFab.vue";
 import InfoCard from "../other/cards/InfoCard.vue";
 
 export default defineComponent({
   name: "ViewerModeTools",
-  setup() {
+  setup(props) {
+    const router = useRouter();
+    const editingCardId = inject("editingCardId") as Ref<number | undefined>;
+
+    const handleShare = () => {
+      nudge();
+      console.log("Sharing");
+    };
+    const handleEdit = () => {
+      nudge();
+      console.log("Editing");
+      router.push("editor");
+      editingCardId.value = props?.card?.id;
+    };
+    const handleDelete = () => {
+      nudge();
+      console.log("Deleting");
+    };
     return {
-      router: useRouter(),
+      router,
+      handleShare,
+      handleEdit,
+      handleDelete,
       arrowForward,
     };
   },
@@ -33,11 +66,13 @@ export default defineComponent({
       required: true,
     },
     card: {
-      required: true,
+      type: Object,
+      required: false,
     },
   },
   components: {
     InfoCard,
+    ToolFab,
   },
 });
 </script>

@@ -97,6 +97,7 @@ import {
   gridOutline as lotNumberIcon,
   locationOutline as clinicSiteIcon,
 } from "ionicons/icons";
+
 export default defineComponent({
   name: "Dose",
   emits: ["doseModified", "removeEditor"],
@@ -106,12 +107,13 @@ export default defineComponent({
     
     const dose = ref(props.dose);
     const inputs = ref({
-      doseNumber: "",
-      brand: "",
-      date: "",
-      lot: "",
-      administeredByOrAt: "",
+      doseNumber: dose.value.doseNumber,
+      brand: dose.value.brand,
+      date: dose.value.date,
+      lot: dose.value.lot,
+      administeredByOrAt: dose.value.administeredByOrAt,
     });
+    console.log('dose.value.date, ', dose.value.date)
     watch(
       inputs,
       () => {

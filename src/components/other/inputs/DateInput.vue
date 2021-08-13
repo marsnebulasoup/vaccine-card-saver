@@ -50,7 +50,7 @@ import { IonItem, IonLabel, IonDatetime } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
 import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
 import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
-import { defineComponent, inject, onBeforeUnmount, Ref, ref, watch } from "vue";
+import { defineComponent, inject, onBeforeUnmount, Ref, ref, watch, watchEffect } from "vue";
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
 import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
 
@@ -74,13 +74,19 @@ export default defineComponent({
         datepicker.value.$el.open();
     };
 
-    const selectedDate = ref<string>();
+
+    const selectedDate = ref<string>(props.modelValue || "");
     const status = ref<"normal" | "pass" | "fail">("normal");
 
-    watch(selectedDate, (curr) => {
-      status.value = curr ? "pass" : "normal";
-      emit("update:modelValue", curr);
-    });
+    watch(() => props.modelValue, (modelValue) => selectedDate.value = modelValue || "")
+    watch(
+      selectedDate,
+      (curr) => {
+        status.value = curr ? "pass" : "normal";
+        emit("update:modelValue", curr);
+      },
+      { immediate: true }
+    );
 
     const errors: Ref<Errors> = inject("errors") as Ref<Errors>;
 

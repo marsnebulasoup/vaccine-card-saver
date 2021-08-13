@@ -24,8 +24,9 @@ const routes: Array<RouteRecordRaw> = [
     path: '/editor',
     name: 'Editor',
     component: Editor,
+    props: route => ({ cardId: route.query.cardId }),
     meta: {
-      transition: {
+      transition: { // TODO: Add a setting to disable page transitions to improve performance
         leaving: 'push-to-left',
         entering: 'push-to-left'
       }

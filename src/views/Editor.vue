@@ -8,7 +8,9 @@
       </ion-toolbar>
       <ion-toolbar>
         <!-- TODO: Make title dynamic so that it reads `Update/Edit Card` when editing it -->
-        <wrappable-title>Add a Card</wrappable-title>
+        <wrappable-title>{{
+          isInEditingMode ? "Modify Card" : "Add a Card"
+        }}</wrappable-title>
       </ion-toolbar>
     </ion-header>
     <ion-content ref="page" :fullscreen="true">
@@ -27,12 +29,8 @@
         >
       </div>
       <doses></doses>
-      <!-- <ion-button @click="errorMsg ? errorMsg = undefined : errorMsg = 'This is a sample error message'">Toggle error</ion-button> -->
     </ion-content>
-    <full-width-button
-      @click="submitForm()"
-      :error="errorMsg"
-      :iconRight="continueIcon"
+    <full-width-button @click="submitForm()" :iconRight="continueIcon"
       >Continue</full-width-button
     >
   </ion-page>
@@ -49,7 +47,7 @@ import {
   onIonViewWillEnter,
   onIonViewDidEnter,
 } from "@ionic/vue";
-import { defineComponent, inject, provide, Ref, ref } from "vue";
+import { defineComponent, inject, provide, Ref, ref, toRef } from "vue";
 import { useRouter } from "vue-router";
 import PersonalInfoForm from "@/components/editor/personal-info-form/PersonalInfoForm.vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
@@ -60,13 +58,17 @@ import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
 import { Card } from "@/utils/cards/card";
 import { Errors, VerifyValidation } from "@/utils/other/ErrorHandlers";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
+import CardHandler from "@/utils/cards";
 // import CardHandler from "@/utils/cards";
 
 export default defineComponent({
   name: "Editor",
   inject: ["platform"],
-  setup() {
-    // const cards: CardHandler = inject("CardHandler") as CardHandler;
+  setup(props) {
+    const cards: CardHandler = inject("CardHandler") as CardHandler;
+    const editingCardId = inject("editingCardId") as Ref<number | undefined>;
+    const isInEditingMode = ref(false);
+
     const router = useRouter();
     const content = ref<Card>({
       id: 0,
@@ -80,13 +82,10 @@ export default defineComponent({
       fullyVaccinated: false,
       doses: [],
     });
-    const errors = ref<Errors>({});
-    provide("content", content);
-    provide("errors", errors);
 
     const resetEditor = inject("resetEditor") as Ref<boolean>;
     onIonViewWillEnter(() => {
-      if (resetEditor.value)
+      if (resetEditor.value) {
         content.value = {
           id: 0,
           lastName: "",
@@ -99,17 +98,32 @@ export default defineComponent({
           fullyVaccinated: false,
           doses: [],
         };
+      }
+      if (editingCardId.value !== undefined) {
+        console.log("In Editing Mode, cardId is ", editingCardId.value);
+        isInEditingMode.value = true;
+        const cardToEdit = cards.getCard(editingCardId.value);
+        if (cardToEdit)
+          content.value = cards.getCardForEditing(editingCardId.value);
+        editingCardId.value = undefined;
+      } else isInEditingMode.value = false;
     });
-    const page = ref();
-    onIonViewDidEnter(() => { if(resetEditor.value) page.value.$el.scrollToTop(500) })
 
-    const errorMsg = ref();
+    const page = ref();
+    onIonViewDidEnter(() => resetEditor.value && page.value.$el.scrollToTop(0));
+
+    const errors = ref<Errors>({});
+    provide("content", content);
+    provide("errors", errors);
 
     const submitForm = () => {
       VerifyValidation(errors, () =>
         router.push({
           name: "Preview",
-          params: { unformattedCard: JSON.stringify(content.value) },
+          params: {
+            unformattedCard: JSON.stringify(content.value),
+            mode: isInEditingMode.value ? "edit" : "add"
+          },
         })
       );
     };
@@ -117,13 +131,13 @@ export default defineComponent({
     const DEBUG = true;
     return {
       DEBUG,
+      isInEditingMode,
       page,
       router,
       content,
       errors,
       submitForm,
       continueIcon,
-      errorMsg,
     };
   },
   components: {

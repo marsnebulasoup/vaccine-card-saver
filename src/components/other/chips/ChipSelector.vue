@@ -28,7 +28,7 @@
         :key="index"
         :color="color"
         :disabled="item.disabled && selected !== item.value"
-        :selected="selected.includes(item.value)"
+        :selected="selected === item.value"
         @click="handleClicks(item, $event)"
       ></bbq-chip>
     </div>
@@ -61,7 +61,7 @@ export default defineComponent({
     const DEBUG = false;
 
     const item = ref();
-    const selected = ref("");
+    const selected = ref(props.modelValue || "");
 
     const computeSelected = ({
       value,
@@ -83,7 +83,7 @@ export default defineComponent({
           DEBUG && console.log("...unselecting");
         } else {
           selected.value = value;
-          DEBUG && console.log("...selecting")
+          DEBUG && console.log("...selecting");
         }
       }
       emit("update:modelValue", selected.value);
@@ -113,8 +113,9 @@ export default defineComponent({
       validatorErrorEl,
     } = ErrorHandlers(errors, props.name, item);
     watch(
-      () => selected.value.length,
+      () => selected.value,
       (itemsAreSelected) => {
+        console.log("itemsAreSelected, ", itemsAreSelected);
         if (itemsAreSelected) removeError();
         else addError(props.errorMsg || `${props.name} is required.`);
       },

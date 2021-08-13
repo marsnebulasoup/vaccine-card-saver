@@ -12,7 +12,10 @@
       </ion-toolbar>
     </ion-header>
     <ion-content ref="page" :fullscreen="true">
-      <add-a-card v-if="!cards.allCards.value.length"></add-a-card>
+      <add-a-card
+        v-if="!cards.allCards.value.length"
+        @addCard="openEditor()"
+      ></add-a-card>
       <transition-group @enter="enter" @leave="leave" :css="false">
         <vaccine-card
           v-for="card in cards.allCards.value"
@@ -26,24 +29,23 @@
         ></vaccine-card>
       </transition-group>
       <viewer-mode-tools
+        v-if="cards.allCards.value.length"
         :isInViewerMode="isInViewerMode"
         :card="cardInViewerMode"
       ></viewer-mode-tools>
 
+      <!-- For debugging the reactive cards array -->
       <div
         :class="{ invisible: isInViewerMode }"
         v-if="DEBUG"
         style="margin: 10px"
       >
-        <!-- For debugging the reactive cards array -->
         <button @click="update()">Update</button>
         <button @click="cards.removeAllCards()">Remove All Cards</button>
         <error-details title="Cards" :data="cards.allCards.value" />
       </div>
-      <fab
-        :class="{ invisible: isInViewerMode }"
-        @click="router.push('editor')"
-      />
+
+      <fab :class="{ invisible: isInViewerMode }" @click="openEditor()" />
     </ion-content>
   </ion-page>
 </template>
@@ -82,6 +84,7 @@ export default defineComponent({
     const cards: CardHandler = inject("CardHandler") as CardHandler;
     const router = useRouter();
 
+    const openEditor = () => router.push("editor");
     // For debugging the reactive Cards array
     // console.log(Cards.value);
     const DEBUG = true;
@@ -123,6 +126,7 @@ export default defineComponent({
     return {
       router,
       page,
+      openEditor,
       update,
       cards,
       DEBUG,

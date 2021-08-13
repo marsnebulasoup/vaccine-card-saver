@@ -24,7 +24,7 @@
         @click="saveCardAndLeave()"
         color="success"
         :iconRight="doneIcon"
-        >Done</full-width-button
+        >Save</full-width-button
       >
     </div>
   </ion-page>
@@ -68,7 +68,8 @@ export default defineComponent({
 
     const saveCardAndLeave = () => {
       DEBUG && console.log('Saving card...')
-      cards.addCard(card.value);
+      if(props.mode === "edit") cards.editCard(card.value);
+      else cards.addCard(card.value);
       router.push("home");
     };
 
@@ -85,6 +86,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    mode: {
+      type: String,
+      required: true
+    }
   },
   components: {
     IonContent,
