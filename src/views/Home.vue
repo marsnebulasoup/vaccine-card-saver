@@ -16,7 +16,6 @@
         v-if="!cards.allCards.value.length"
         @addCard="openEditor()"
       ></add-a-card>
-      <!-- TODO: 👉👉👉 Add a way to delete info cards. -->
       <info-card
         v-else
         :class="{
@@ -27,7 +26,10 @@
         subtitleColor="success"
         color="green"
         title="You can edit, share, or delete cards by clicking on them"
+        deleteId="tips"
       />
+
+
       <transition-group @enter="enter" @leave="leave" :css="false">
         <vaccine-card
           v-for="card in cards.allCards.value"

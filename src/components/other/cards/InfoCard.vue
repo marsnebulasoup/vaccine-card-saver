@@ -1,11 +1,24 @@
 <template>
   <ion-card
-    mode="ios"    
+    v-if="exists"
+    mode="ios"
     :style="`background: rgba(var(--${color}), ${opacity})`"
   >
     <ion-card-header>
-      <ion-card-subtitle>
+      <ion-card-subtitle
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
         <caption-text :color="subtitleColor">{{ subtitle }}</caption-text>
+        <ion-icon
+          v-if="deleteId"
+          @click="exists = false"
+          :icon="closeIcon"
+          style="opacity: 0.5"
+        ></ion-icon>
       </ion-card-subtitle>
       <ion-card-title>
         <ion-text color="dark">
@@ -27,16 +40,21 @@ import {
   IonCardTitle,
   IonCardSubtitle,
   IonText,
+  IonIcon,
 } from "@ionic/vue";
-import { arrowForward } from "ionicons/icons";
+import { closeCircle as closeIcon } from "ionicons/icons";
 import { defineComponent } from "vue";
 import CaptionText from "../text/CaptionText.vue";
+import InfoCard from "@/utils/other/InfoCardHandler";
 
 export default defineComponent({
   name: "ViewerModeTools",
-  setup() {
+  setup(props) {
+    const exists = InfoCard(props.deleteId);
+
     return {
-      arrowForward,
+      closeIcon,
+      exists,
     };
   },
   props: {
@@ -48,13 +66,16 @@ export default defineComponent({
     },
     color: {
       type: String,
-      default: "green" // can be green, yellow, red, or blue, see css styles below
+      default: "green", // can be green, yellow, red, or blue, see css styles below
     },
     opacity: {
       type: Number,
-      default: 0.3
+      default: 0.3,
     },
     subtitleColor: {
+      type: String,
+    },
+    deleteId: {
       type: String,
     },
   },
@@ -65,7 +86,8 @@ export default defineComponent({
     IonCardSubtitle,
     IonCardTitle,
     CaptionText,
-    IonText
+    IonText,
+    IonIcon,
   },
 });
 </script>
