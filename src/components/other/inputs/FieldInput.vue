@@ -25,6 +25,7 @@
         :value="inputValue"
         @input="inputValue = $event.target.value"
         @click="scrollInput($event, 'y')"
+        @focus="tap()"
         class="input"
       />
       <validator-icon
@@ -46,6 +47,8 @@
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
+    :popover="popover"
+    v-if="popover"
   ></popover-wrapper>
 </template>
 
@@ -55,9 +58,11 @@ import CaptionText from "@/components/other/text/CaptionText.vue";
 import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
 import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
 import {
+  computed,
   defineComponent,
   inject,
   onBeforeUnmount,
+  provide,
   Ref,
   ref,
   toRef,
@@ -66,6 +71,7 @@ import {
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
 import { InputValidators, ScrollUtils } from "@/utils/other";
 import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
+import { tap } from "@/utils/haptics";
 
 export default defineComponent({
   name: "FieldInput",
@@ -76,7 +82,8 @@ export default defineComponent({
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: any) => {
-      console.log(ev);
+      DEBUG && console.log('Opening popover, ', ev);
+      tap()
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -145,6 +152,7 @@ export default defineComponent({
       isValidatorErrorVisible,
       validatorErrorMsg,
       validatorErrorEl,
+      tap,
       log: console.log,
     };
   },
@@ -196,6 +204,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    popover: {
+      type: Object,
+      required: true
+    }
   },
   components: {
     IonItem,

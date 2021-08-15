@@ -3,7 +3,7 @@
     <ion-header class="ion-no-border" mode="ios" collapse="condense">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :mode="platform"></ion-back-button>
+          <ion-back-button @click.passive="tap()" :mode="platform"></ion-back-button>
         </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
@@ -59,6 +59,7 @@ import { Card } from "@/utils/cards/card";
 import { Errors, VerifyValidation } from "@/utils/other/ErrorHandlers";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 import CardHandler from "@/utils/cards";
+import { tap } from "@/utils/haptics";
 // import CardHandler from "@/utils/cards";
 
 export default defineComponent({
@@ -131,6 +132,7 @@ export default defineComponent({
     const DEBUG = true;
     return {
       DEBUG,
+      tap,
       isInEditingMode,
       page,
       router,

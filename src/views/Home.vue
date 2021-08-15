@@ -16,6 +16,18 @@
         v-if="!cards.allCards.value.length"
         @addCard="openEditor()"
       ></add-a-card>
+      <!-- TODO: 👉👉👉 Add a way to delete info cards. -->
+      <info-card
+        v-else
+        :class="{
+          'hide-card': isLeavingViewerMode,
+          'hide-card-completely': isInViewerMode,
+        }"
+        subtitle="Tips"
+        subtitleColor="success"
+        color="green"
+        title="You can edit, share, or delete cards by clicking on them"
+      />
       <transition-group @enter="enter" @leave="leave" :css="false">
         <vaccine-card
           v-for="card in cards.allCards.value"
@@ -58,7 +70,7 @@ import {
   IonToolbar,
   onIonViewDidEnter,
 } from "@ionic/vue";
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, provide, ref } from "vue";
 import { useRouter } from "vue-router";
 import AddACard from "@/components/home/AddACard.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
@@ -71,6 +83,8 @@ import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 import { ViewerModeHandler } from "@/utils/other/ViewerModeHandler";
 
 import ViewerModeTools from "@/components/home/ViewerModeTools.vue";
+import { nudge } from "@/utils/haptics";
+import InfoCard from "@/components/other/cards/InfoCard.vue";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export default defineComponent({
@@ -84,13 +98,16 @@ export default defineComponent({
     const cards: CardHandler = inject("CardHandler") as CardHandler;
     const router = useRouter();
 
-    const openEditor = () => router.push("editor");
+    const openEditor = () => {
+      nudge();
+      router.push("editor");
+    };
     // For debugging the reactive Cards array
     // console.log(Cards.value);
     const DEBUG = true;
     const update = () => {
       cards.addCard({
-        id: 3,
+        id: 0,
         lastName: "Klown",
         firstName: "George",
         middleInitial: "D",
@@ -103,7 +120,7 @@ export default defineComponent({
           {
             doseNumber: "1" as DoseNumbers,
             brand: "Pfizer",
-            date: "",
+            date: "2021-08-13T20:25:32.098Z",
             dateFormatted: "5/12/21",
             administeredByOrAt: "CVS9999",
             lot: "KS2384",
@@ -111,7 +128,7 @@ export default defineComponent({
           {
             doseNumber: "2" as DoseNumbers,
             brand: "Pfizer",
-            date: "",
+            date: "2021-08-13T20:25:32.098Z",
             dateFormatted: "6/2/21",
             administeredByOrAt: "CVS9999",
             lot: "KS2384",
@@ -123,6 +140,16 @@ export default defineComponent({
     const page = ref();
 
     onIonViewDidEnter(() => page.value.$el.scrollToTop(500));
+    const {
+      isInViewerMode,
+      isLeavingViewerMode,
+      cardInViewerMode,
+      openOrCloseViewerMode,
+      shouldHideCard,
+      shouldHideCardCompletely,
+    } = ViewerModeHandler(page);
+
+    provide("openOrCloseViewerMode", openOrCloseViewerMode);
     return {
       router,
       page,
@@ -130,7 +157,12 @@ export default defineComponent({
       update,
       cards,
       DEBUG,
-      ...ViewerModeHandler(page),
+      isInViewerMode,
+      isLeavingViewerMode,
+      cardInViewerMode,
+      openOrCloseViewerMode,
+      shouldHideCard,
+      shouldHideCardCompletely,
     };
   },
   methods: {
@@ -147,6 +179,7 @@ export default defineComponent({
     Fab,
     ErrorDetails,
     ViewerModeTools,
+    InfoCard,
   },
 });
 </script>

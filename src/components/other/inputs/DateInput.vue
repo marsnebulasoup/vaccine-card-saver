@@ -42,6 +42,8 @@
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
+    v-if="popover"
+    :popover="popover"
   ></popover-wrapper>
 </template>
 
@@ -53,6 +55,7 @@ import PopoverWrapper from "@/components/other/popover/PopoverWrapper.vue";
 import { defineComponent, inject, onBeforeUnmount, Ref, ref, watch, watchEffect } from "vue";
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
 import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
+import { tap } from "@/utils/haptics";
 
 export default defineComponent({
   name: "DateInput",
@@ -63,6 +66,7 @@ export default defineComponent({
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: any) => {
+      tap()
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -70,8 +74,10 @@ export default defineComponent({
     // Opens datepicker
     const datepicker = ref();
     const openPicker = (ev: any) => {
-      if (!ev.target.attributes.getNamedItem("data-is-an-icon"))
+      if (!ev.target.attributes.getNamedItem("data-is-an-icon")) {
+        tap();
         datepicker.value.$el.open();
+      }
     };
 
 
@@ -121,7 +127,7 @@ export default defineComponent({
       status,
       isValidatorErrorVisible,
       validatorErrorMsg,
-      validatorErrorEl,
+      validatorErrorEl,      
       log: console.log,
     };
   },
@@ -166,6 +172,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    popover: {
+      type: Object,
+      required: true
+    }
   },
   components: {
     IonItem,

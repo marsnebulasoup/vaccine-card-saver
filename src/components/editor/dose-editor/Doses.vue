@@ -52,6 +52,9 @@ import {
   FormatDosesForEditing,
   ManageDisabledDoseNumbers,
 } from "@/utils/other/DoseNumbersHandler";
+import { notify, nudge } from "@/utils/haptics";
+import { handleDelete } from "@/utils/other/AlertHandler";
+import { NotificationType } from "@capacitor/haptics";
 
 export default defineComponent({
   name: "Doses",
@@ -118,10 +121,10 @@ export default defineComponent({
     });
 
     const removeADose = (index: number) => {
-      console.log(index);
-      console.table(doses.value);
-      doses.value.splice(index, 1);
-      console.table(doses.value);
+      handleDelete({ header: "Delete this dose?" }, () => {
+        notify({ type: NotificationType.Success });
+        doses.value.splice(index, 1);
+      });
     };
 
     const addDoseCard = ref();

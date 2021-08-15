@@ -42,8 +42,6 @@ export class VaccineDose {
     { doseNumber, brand, date, administeredByOrAt, lot }:
       { doseNumber: string; brand: string; date: string; administeredByOrAt: string; lot: string }
   ) {
-    // TODO: 👉👉👉 the chip selector for dose numbers have fields "First", "Second", "Other", which are not in the type "1" | "2" | "Other" ...enums might be better for this?
-    // also stress test this af   
     this.doseNumber = doseNumber //this.processDoseNumber(doseNumber) || "N/A"
     this.brand = this.processBrands(brand)
 

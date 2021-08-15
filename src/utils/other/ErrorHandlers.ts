@@ -1,5 +1,7 @@
+import { notify } from './../haptics/index';
 import { Ref, ref, watch } from "vue";
 import { ScrollUtils } from ".";
+import { NotificationType } from '@capacitor/haptics';
 
 const DEBUG = false;
 
@@ -76,11 +78,13 @@ export const VerifyValidation = (errors: Ref<Errors>, callback: Function) => {
     const error = errors.value[key]
     if (error.exists) {
       DEBUG && console.log('Validation failed, showing error')
+      notify({ type: NotificationType.Warning })
       error.show = true
       return
     }
   }
   DEBUG && console.log('Validation succeeded, calling callback()')
+  notify({ type: NotificationType.Success })
   callback();
 }
 

@@ -68,3 +68,7 @@ ion-header ion-toolbar:first-of-type {
   align-items: center;
   justify-content: center;
 }
+
+.delete-card-alert .delete {
+  color: var(--ion-color-danger);
+}

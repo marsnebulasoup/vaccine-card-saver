@@ -1,5 +1,5 @@
 <template>
-  <ion-card mode="ios" data-is-vaccine-card>
+  <ion-card mode="ios" :data-vaccine-card-id="card.id">
     <ion-card-content>
       <div class="vaccine-card">
         <div class="personal-info">
@@ -53,6 +53,7 @@ export default defineComponent({
       required: true,
       default() {
         return {
+          id: 6,
           name: "Joel K. Foster",
           dob: "",
           dobFormatted: "Feb 3rd, 1273",

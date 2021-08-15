@@ -21,6 +21,7 @@
           mode="ios"
           :color="color"
           @ionChange="isSelected = $event.target.checked"
+          @click="tap()"
           :checked="modelValue"
         >
         </ion-checkbox>
@@ -45,6 +46,8 @@
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
+    v-if="popover"
+    :popover="popover"
   ></popover-wrapper>
 </template>
 
@@ -64,6 +67,7 @@ import {
 } from "vue";
 import ValidatorIcon from "@/components/other/inputs/ValidatorIcon.vue";
 import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
+import { tap } from "@/utils/haptics";
 
 export default defineComponent({
   name: "Checkbox",
@@ -74,6 +78,7 @@ export default defineComponent({
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: Event) => {
+      tap()
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -137,6 +142,7 @@ export default defineComponent({
       validatorErrorMsg,
       validatorErrorEl,
       checkbox,
+      tap
     };
   },
   props: {
@@ -173,6 +179,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    popover: {
+      type: Object,
+      required: true
+    }
   },
   components: {
     IonItem,

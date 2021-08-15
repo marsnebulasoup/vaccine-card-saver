@@ -1,0 +1,64 @@
+{
+  "lastName": {
+    "header": "Last Name",
+    "msg": "The **Last Name** field is found near the top-left of your vaccine card.",
+    "gif": "LastName.gif"
+  },
+  "firstName": {
+    "header": "First Name",
+    "msg": "The **First Name** field is found near the top-middle of your vaccine card.",
+    "gif": "FirstName.gif"
+  },
+  "middleInitial":{
+    "header": "Middle Initial",
+    "msg": "The **Middle Initial** field is found near the top-right of your vaccine card. Note that it's labeled 'MI'.",
+    "gif": "MiddleInitial.gif"
+  },
+  "dob": {
+    "header": "Date Of Birth",
+    "msg": "The **Date of Birth** field is found near the middle-left of your vaccine card.",
+    "gif": "DateOfBirth.gif"
+  },
+  "patientNumber": {
+    "header": "Patient Number",
+    "msg": "The **Patient Number** field is found near the middle-right of your vaccine card.<br><br>Note that it's labeled<br>'Patient Number <i>(medical record or IIS record number)</i>'",
+    "gif": "PatientNumber.gif"
+  },
+  "fullyVaccinated": {
+    "header": "Fully Vaccinated?",
+    "msg": "If you are fully vaccinated, select this field, and it'll state so on the top of your saved card.<br><br>If you aren't fully vaccinated, don't select it. <br><br><a href='https://www.cdc.gov/coronavirus/2019-ncov/vaccines/fully-vaccinated.html#:~:text=Have%20You%20Been,Johnson%E2%80%99s%20Janssen%20vaccine'>According to the CDC</a>, people are considered fully vaccinated:<ul><li>2 weeks after their second dose in a 2-dose series, such as the Pfizer or Moderna vaccines, or</li><li>2 weeks after a single-dose vaccine, such as Johnson & Johnson’s Janssen vaccine</li>",
+    "gif": false                                                                                                                                 
+  },
+  "dose": {
+    "dose": {
+      "header": "Vaccine Dose",
+      "msg": "For each vaccine dose you've taken, there will be a row filled in on your card. Add each dose that's been filled out so far by clicking 'Add Dose', and leave out blank doses. There are a maximum of 4 doses on the card, but generally only 1-2 will be filled out.",
+      "gif": "Doses.gif"
+    },
+    "doseNumber": {
+      "header": "Dose Number",
+      "msg": "For each dose, you can find the **dose number** in the first column. It'll be either 'First', 'Second', or 'Other'.",
+      "gif": "DoseNumbers.gif"
+    },
+    "brand": {
+      "header": "Brand",
+      "msg": "In the second column, on the top half of each cell, the vaccine **name/brand/manufacturer** can be found. It should say either 'Pfizer', 'Moderna', or 'J&J', etc., but note that its placement may vary.",
+      "gif": "Brand.gif"
+    },
+    "lot": {
+      "header": "Lot Number",
+      "msg": "In the second column, on the bottom half of each cell, the vaccine **lot number** can be found. It should be a series of around six letters and numbers, e.g.: AB1234",
+      "gif": "LotNumber.gif"
+    },
+    "date": {
+      "header": "Date",
+      "msg": "In the third column, you can find the **date** you received a vaccine dose.",
+      "gif": "Date.gif"
+    },
+    "administeredByOrAt": {
+      "header": "Healthcare Professional Or Clinic Site",
+      "msg": "In the last column, you can find either the **name** of the person who administered the dose, or the place where you received it.",
+      "gif": "HealthcareProfessionalOrClinicSite.gif"
+    }
+  }
+}

@@ -5,13 +5,25 @@ import { Card } from "../cards/card";
 import { ScreenBrightness } from '@capacitor-community/screen-brightness';
 import { useRouter } from 'vue-router';
 
-const findCardEl = (ev: any) => ev.path.find((el: HTMLElement) => {
-  try {
-    return el.getAttribute("data-is-vaccine-card") !== null;
-  } catch (e) {
-    return false;
+const findCardEl = (ev: any) => {
+  if (typeof ev === "number") {
+    try {
+      const el = document.querySelector(`[data-vaccine-card-id="${ev}"]`)
+      return el
+    }
+    catch (e) {
+      console.error("Unable to find ion-card with data-vaccine-card-id attribute equal to ", ev)
+      console.error(e)
+    }
   }
-});
+  return ev.path.find((el: HTMLElement) => {
+    try {
+      return el.getAttribute("data-vaccine-card-id") !== null;
+    } catch (e) {
+      return false;
+    }
+  });
+}
 
 export const ViewerModeHandler = (page: Ref) => {
   /*
@@ -54,6 +66,9 @@ export const ViewerModeHandler = (page: Ref) => {
   const cardInViewerMode = ref<Card>();
   const initialBrightness = ref<number>(0.5);
 
+  ScreenBrightness.getBrightness()
+    .then(info => initialBrightness.value = info.brightness)
+
   router.beforeEach((to, from, next) => {
     if (isInViewerMode.value && to.name === "Home") {
       ScreenBrightness.setBrightness({ brightness: 1 })
@@ -62,10 +77,10 @@ export const ViewerModeHandler = (page: Ref) => {
     next()
   })
 
-  const openOrCloseViewerMode = (card: Card, ev: any) => {
+  const openOrCloseViewerMode = (card: Card | undefined, ev: any, vibrate?: boolean) => {
     DEBUG && console.log("Viewermode click event -> ", ev);
 
-    nudge()
+    vibrate !== false && nudge()
 
     cardInViewerMode.value = card;
     const cardEl = findCardEl(ev)

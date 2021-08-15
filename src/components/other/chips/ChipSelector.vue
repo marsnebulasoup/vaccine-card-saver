@@ -41,6 +41,8 @@
   <popover-wrapper
     v-model:isPopoverOpen="isPopoverOpen"
     v-model:popoverEvent="popoverEvent"
+    v-if="popover"
+    :popover="popover"
   ></popover-wrapper>
 </template>
 
@@ -53,6 +55,7 @@ import PopoverWrapper from "../popover/PopoverWrapper.vue";
 import ValidationPopoverWrapper from "../popover/ValidationPopoverWrapper.vue";
 import { ScrollUtils } from "@/utils/other";
 import { ErrorHandlers, Errors } from "@/utils/other/ErrorHandlers";
+import { nudge } from "@/utils/haptics";
 
 export default defineComponent({
   name: "ChipSelector",
@@ -98,6 +101,7 @@ export default defineComponent({
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: PointerEvent) => {
+      nudge()
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -167,6 +171,10 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    popover: {
+      type: Object,
+      required: true
+    }
   },
   components: {
     "bbq-chip": BBQChip,

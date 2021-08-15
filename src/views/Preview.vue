@@ -3,7 +3,10 @@
     <ion-header class="ion-no-border" mode="ios" collapse="condense">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :mode="platform"></ion-back-button>
+          <ion-back-button
+            @click.passive="tap()"
+            :mode="platform"
+          ></ion-back-button>
         </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
@@ -14,10 +17,7 @@
       <vaccine-card :card="card"></vaccine-card>
     </ion-content>
     <div style="display: flex; flex-flow: nowrap">
-      <full-width-button
-        @click="router.back()"
-        color="primary"
-        :iconLeft="backIcon"
+      <full-width-button @click="goBack()" color="primary" :iconLeft="backIcon"
         >Back</full-width-button
       >
       <full-width-button
@@ -50,6 +50,8 @@ import VaccineCard from "@/components/card/VaccineCard.vue";
 import WrappableTitle from "@/components/other/text/WrappableTitle.vue";
 import { Card, FormatVaccineCard } from "@/utils/cards/card";
 import CardHandler from "@/utils/cards";
+import { notify, nudge, tap } from "@/utils/haptics";
+import { NotificationType } from "@capacitor/haptics";
 
 export default defineComponent({
   name: "Home",
@@ -63,19 +65,25 @@ export default defineComponent({
       return FormatVaccineCard(parsed);
     });
 
-
     DEBUG && console.log("Card from /editor -> ", card.value);
 
+    const goBack = () => {
+      nudge();
+      router.back();
+    };
     const saveCardAndLeave = () => {
-      DEBUG && console.log('Saving card...')
-      if(props.mode === "edit") cards.editCard(card.value);
+      DEBUG && console.log("Saving card...");
+      if (props.mode === "edit") cards.editCard(card.value);
       else cards.addCard(card.value);
+      notify({ type: NotificationType.Success });
       router.push("home");
     };
 
     return {
       router,
       card,
+      tap,
+      goBack,
       saveCardAndLeave,
       backIcon,
       doneIcon,
@@ -88,8 +96,8 @@ export default defineComponent({
     },
     mode: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
     IonContent,

@@ -12,6 +12,7 @@
           placeholder="Sisko"
           :max="50"
           :pattern="/^[\p{L},.'-]+$/u"
+          :popover="popoverHelp.lastName"
           v-model="content.lastName"
           >Last Name</field-input
         >
@@ -21,13 +22,14 @@
       <ion-col>
         <field-input
           name="First Name"
-          errorMsg="That doesn't look like a first   name"
+          errorMsg="That doesn't look like a first name"
           autocomplete="given-name"
           :required="true"
           :icon="person"
           placeholder="Benjamin"
           :max="50"
           :pattern="/^[\p{L},.'-]+$/u"
+          :popover="popoverHelp.firstName"
           v-model="content.firstName"
           >First Name</field-input
         >
@@ -40,6 +42,7 @@
           :max="1"
           placeholder="L"
           :pattern="/^[\p{L},.'-]+$/u"
+          :popover="popoverHelp.middleInitial"
           v-model="content.middleInitial"
         >
           Middle Initial
@@ -54,6 +57,7 @@
           :icon="calendar"
           type="date"
           v-model="content.dob"
+          :popover="popoverHelp.dob"
           >Date of Birth</date-input
         >
       </ion-col>
@@ -69,6 +73,7 @@
           :max="20"
           :pattern="/[a-zA-Z0-9]/g"
           v-model="content.patientNumber"
+          :popover="popoverHelp.patientNumber"
           >Patient number</field-input
         >
       </ion-col>
@@ -81,6 +86,7 @@
           color="success"
           placeholder="Are you fully vaccinated?"
           v-model="content.fullyVaccinated"
+          :popover="popoverHelp.fullyVaccinated"
           >Fully Vaccinated</checkbox
         >
       </ion-col>
@@ -100,7 +106,8 @@ export default defineComponent({
   name: "PersonalInfoForm",
   setup() {
     const content: Ref<Card> = inject("content") as Ref<Card>;
-    return { person, content, calendar, documentText };
+    const popoverHelp = require('@/assets/PopoverHelp.json')
+    return { popoverHelp, person, content, calendar, documentText };
   },
   components: {
     IonGrid,

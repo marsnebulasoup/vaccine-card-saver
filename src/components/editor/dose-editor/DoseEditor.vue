@@ -10,7 +10,8 @@
         v-model="inputs.doseNumber"
         :items="doseNumbers"
         :icon="doseNumberIcon"
-        color="primary"        
+        color="primary"
+        :popover="popoverHelp.dose.doseNumber"
         >Dose</chip-selector
       >
       <chip-selector
@@ -19,7 +20,8 @@
         v-model="inputs.brand"
         :items="brandNames.allBrandsForChipSelector"
         :icon="vaccineBrandIcon"
-        color="success"       
+        color="success"
+        :popover="popoverHelp.dose.brand"
         >Brand</chip-selector
       >
       <field-input
@@ -32,6 +34,7 @@
         :max="10"
         :pattern="/[a-zA-Z0-9]/g"
         :noPadding="true"
+        :popover="popoverHelp.dose.lot"
         >LOT Number</field-input
       >
       <date-input
@@ -42,6 +45,7 @@
         type="date"
         color="medium"
         :noPadding="true"
+        :popover="popoverHelp.dose.date"
         >Date</date-input
       >
       <field-input
@@ -54,6 +58,7 @@
         :pattern="/^[\p{L}0-9 !@#$%^&*()_?:;,.'-]+$/u"
         :noPadding="true"
         :wrapCaption="true"
+        :popover="popoverHelp.dose.administeredByOrAt"
         >Healthcare professional or clinic site</field-input
       >
       <div
@@ -63,6 +68,7 @@
         <icon-button
           @click="$emit('removeEditor')"
           class="ion-no-padding"
+          style="--ripple-color: transparent"
           color="danger"
           fill="clear"
           mode="md"
@@ -74,13 +80,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  inject,
-  Ref,
-  ref,
-  watch,
-} from "vue";
+import { defineComponent, inject, Ref, ref, watch } from "vue";
 import { IonCard, IonCardContent, IonCardTitle } from "@ionic/vue";
 
 import ChipSelector from "@/components/other/chips/ChipSelector.vue";
@@ -102,9 +102,10 @@ export default defineComponent({
   name: "Dose",
   emits: ["doseModified", "removeEditor"],
   setup(props, { emit }) {
-    const doseNumbers = inject("DoseNumbers") as Ref;    
+    const doseNumbers = inject("DoseNumbers") as Ref;
     const brandNames = inject("VaccineBrands") as Ref;
-    
+    const popoverHelp = require("@/assets/PopoverHelp.json");
+
     const dose = ref(props.dose);
     const inputs = ref({
       doseNumber: dose.value.doseNumber,
@@ -113,7 +114,7 @@ export default defineComponent({
       lot: dose.value.lot,
       administeredByOrAt: dose.value.administeredByOrAt,
     });
-    console.log('dose.value.date, ', dose.value.date)
+    console.log("dose.value.date, ", dose.value.date);
     watch(
       inputs,
       () => {
@@ -127,6 +128,7 @@ export default defineComponent({
     return {
       doseNumbers,
       brandNames,
+      popoverHelp,
 
       inputs,
 
@@ -145,7 +147,7 @@ export default defineComponent({
     dose: {
       type: VaccineDose,
       required: true,
-    }
+    },
   },
   components: {
     IonCard,

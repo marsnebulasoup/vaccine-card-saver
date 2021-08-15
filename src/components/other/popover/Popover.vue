@@ -1,35 +1,64 @@
 <template>
   <ion-content class="ion-padding">
     <div style="display: flex; align-items: center">
-      <ion-title class="ion-no-padding popover-title">Last Name</ion-title>
-      <ion-icon @click="$emit('dismiss')" :icon="closeIcon"></ion-icon>
+      <wrappable-title noPadding size="20" class="popover-title">{{
+        popover.header
+      }}</wrappable-title>
+      <ion-icon @click="dismiss()" :icon="closeIcon"></ion-icon>
     </div>
-    <p>
-      The <strong>Last Name</strong> field is found on the top-left of your
-      vaccine card.
-    </p>
+    <p v-html="msg"></p>
     <img
+      v-if="popover.gif"
       class="ion-margin-top popover-image"
-      :src="require('@/assets/sample-card.jpg')"
+      :src="img"
     />
   </ion-content>
 </template>
 
 <script>
-import { IonTitle, IonContent, IonIcon } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { IonContent, IonIcon } from "@ionic/vue";
+import { computed, defineComponent } from "vue";
 import { close as closeIcon } from "ionicons/icons";
+import WrappableTitle from "../text/WrappableTitle.vue";
+import { tap } from "@/utils/haptics";
 
 export default defineComponent({
   name: "Popover",
-  emits: ['dismiss'],
-  setup() {
-    return { closeIcon };
+  emits: ["dismiss"],
+  setup(props, {emit}) {
+    console.log(props.popover);
+    const msg = computed(() => {
+      const boldPattern = /\*\*(.*?)\*\*/gm;
+      const html = props.popover.msg.replace(
+        boldPattern,
+        "<strong>$1</strong>"
+      );
+      return html;
+    });
+
+    const img = computed(() => {
+      if (props.popover.gif) {
+        return require(`@/assets/${props.popover.gif}`);
+      }
+      return "";
+    });
+
+    const dismiss = () => {
+        tap()
+        emit('dismiss')
+    }
+    return { msg, img, dismiss, closeIcon };
   },
   components: {
     IonContent,
-    IonTitle,
     IonIcon,
+    WrappableTitle,
+  },
+  props: {
+    popover: {
+      type: Object,
+      required: true,
+    },
   },
 });
 </script>
@@ -38,21 +67,24 @@ export default defineComponent({
 .popover-styles .popover-content {
   top: 0px !important;
   left: 0px !important;
-  margin: 150px 30px !important;
+  margin: 16vh 30px !important;
   width: unset !important;
-  max-height: 500px;
+  max-height: 75vh;
 }
 
 .popover-styles .popover-title {
   font-weight: 700;
   text-transform: uppercase;
+  padding-right: 25px !important; 
 }
 
 .popover-styles .popover-image {
+  border-radius: 4px;
 }
 
 .popover-styles ion-icon {
-  padding: 0 !important;
-  color: var(--ion-color-medium)
+  position: absolute;
+  right: 15px;
+  color: var(--ion-color-medium);
 }
 </style>

@@ -9,7 +9,7 @@
     @didDismiss="closePopover()"
     :keyboard-close="true"
   >
-    <popover @dismiss="closePopover()"></popover>
+    <popover @dismiss="closePopover()" :popover="popover"></popover>
   </ion-popover>
 </template>
 
@@ -29,6 +29,10 @@ export default defineComponent({
       type: Event,
       default: undefined,
     },
+    popover: {
+      type: Object,
+      required: true
+    }
   },
   setup(_, context) {
     const closePopover = () => {

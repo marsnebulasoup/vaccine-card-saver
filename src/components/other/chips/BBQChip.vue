@@ -6,18 +6,25 @@
     :disabled="disabled"
     :outline="true"
     :color="color"
+    @click="!disabled && tap()"
   >
     <ion-icon v-if="icon" style="font-size: 18px" :icon="icon"></ion-icon>
     <ion-label>{{ label }}</ion-label>
   </ion-chip>
 </template>
 
-<script>
+<script lang="ts">
+import { tap } from "@/utils/haptics";
 import { IonChip, IonIcon, IonLabel } from "@ionic/vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "bbq-chip",
+  setup() {
+    return {
+      tap
+    }
+  },
   props: {
     icon: {
       type: String,

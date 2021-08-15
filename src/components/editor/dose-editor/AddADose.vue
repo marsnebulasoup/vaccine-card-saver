@@ -1,5 +1,5 @@
 <template>
-  <ion-card mode="ios">
+  <ion-card mode="ios" @click="nudge()">
     <ion-card-content>
       <ion-item>
         <ion-icon :icon="addOutline"></ion-icon>
@@ -16,11 +16,12 @@ import { defineComponent } from "vue";
 import { IonCard, IonCardContent, IonItem, IonIcon } from "@ionic/vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
 import { addOutline } from "ionicons/icons";
+import { nudge } from "@/utils/haptics";
 
 export default defineComponent({
   name: "AddADose",
-  setup() {
-    return { addOutline };
+  setup() {    
+    return { addOutline, nudge };
   },
   components: {
     IonCard,
