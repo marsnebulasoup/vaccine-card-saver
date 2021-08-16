@@ -19,18 +19,6 @@ class CardHandler {
     return this.cards.value.find(card => card.id === id);
   }
 
-  getCardForEditing(id: number) {
-    const card = JSON.parse(JSON.stringify(this.getCard(id)));
-    if (card) {
-      card.lastName = card.lastName.replace("N/A", "");
-      card.firstName = card.firstName.replace("N/A", "");
-      card.middleInitial = card.middleInitial.slice(0, 1)
-      card.dob = card.dob.replace("N/A", "")
-      card.patientNumber = card.patientNumber.replace("N/A", "")
-    }
-    return card;
-  }
-
   getCardIndex(id: number): number {
     return this.cards.value.findIndex(card => card.id === id);
   }
@@ -57,6 +45,17 @@ class CardHandler {
     return false
   }
 
+  formatCardForEditing(card: Card) {
+    if (card) {
+      card.lastName = card.lastName.replace("N/A", "");
+      card.firstName = card.firstName.replace("N/A", "");
+      card.middleInitial = card.middleInitial.slice(0, 1)
+      card.dob = card.dob.replace("N/A", "")
+      card.patientNumber = card.patientNumber.replace("N/A", "")
+    }
+    return card;
+  }
+
   removeCard(id: number): void {
     this.cards.value = this.cards.value.filter(card => card.id !== id)
   }
@@ -70,7 +69,7 @@ class CardHandler {
     let id = 0;
     while (ids.includes(id)) {
       id = Math.floor(Math.random() * 10000000000);
-      DEBUG && console.error(`⚠ WARNING ⚠\n The ID '${id}' is used for multiple Cards, so it'll be changed to '${id}'`)
+      DEBUG && console.warn(`⚠ WARNING ⚠\n The ID '${id}' is used for multiple CARDS, so it'll be changed to '${id}'`)
     }
     return id
   }

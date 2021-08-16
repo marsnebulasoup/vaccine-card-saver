@@ -7,11 +7,11 @@ export enum DoseNumbers {
   Other = "Other"
 }
 
-export const InvertedDoseNumbers = {
-  [`${DoseNumbers.First}`]: "First",
-  [`${DoseNumbers.Second}`]: "Second",
-  [`${DoseNumbers.Other}`]: "Other"
-}
+// export const InvertedDoseNumbers = {
+//   [`${DoseNumbers.First}`]: "First",
+//   [`${DoseNumbers.Second}`]: "Second",
+//   [`${DoseNumbers.Other}`]: "Other"
+// }
 
 export const DoseNumbersInfo: {
   [key: string]: {
@@ -33,23 +33,40 @@ export const DoseNumbersInfo: {
   },
 }
 
+export const generateDoseId = (doses: VaccineDose[]): number => {
+  const DEBUG = true;
+  const ids = doses.map(dose => dose.id);
+  let id = 0;
+  while (!id || ids.includes(id)) {
+    id = Math.floor(Math.random() * 10000000000);
+    console.warn(`⚠ WARNING ⚠\n The ID '${id}' is used for multiple DOSES, so it'll be changed to '${id}'`)
+  }
+  return id
+}
+
 export const FormatDosesForEditing = (doses: Dose[]) => {
-  const formatted: { id: number; dose: VaccineDose }[] = []
+  const DEBUG = false
+  DEBUG && console.log("DOSE -> ", doses.slice(0))
+  const formatted: VaccineDose[] = []
   doses.forEach((dose: any, index) => {
-    dose.doseNumber = InvertedDoseNumbers[dose.doseNumber]
-    formatted.push({
-      id: index,
-      dose: new VaccineDose(dose)
-    })
+    if (dose.doseNumber === "N/A") dose.doseNumber = ""
+    if (dose.brand === "N/A") dose.brand = ""
+    if (dose.date === "N/A") dose.date = ""
+    if (dose.dateFormatted === "N/A") dose.dateFormatted = ""
+    if (dose.lot === "N/A") dose.lot = ""
+    if (dose.administeredByOrAt === "N/A") dose.administeredByOrAt = ""
+
+    formatted.push(new VaccineDose(dose))
   })
   return formatted
 }
 
 export const CreateNewDoseNumberArrayForChipSelector = () => {
   const doseNumbers = ref<DoseNumberForChipSelector[]>(
-    Object.keys(DoseNumbersInfo).map((key) => {
+    Object.entries(DoseNumbersInfo).map(([key, { value }]) => {
       return {
-        value: key,
+        name: key,
+        value: value,
         disabled: false,
       };
     })
@@ -57,10 +74,10 @@ export const CreateNewDoseNumberArrayForChipSelector = () => {
   return doseNumbers
 }
 
-export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose }[], doseNumbers: Ref<DoseNumberForChipSelector[]>) => {
+export const UpdateDisabledDoseNumbers = (doses: VaccineDose[], doseNumbers: Ref<DoseNumberForChipSelector[]>) => {
   const DEBUG = false;
 
-  const selectedDoseNumbers = doses.map((dose) => dose.dose.doseNumber);
+  const selectedDoseNumbers = doses.map((dose) => dose.doseNumber);
   DEBUG && console.log("Selected Dose Numbers -> ", selectedDoseNumbers);
 
   for (const doseNumberType in DoseNumbersInfo) {
@@ -69,7 +86,7 @@ export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose
     DEBUG && console.log("Current doseNumberTypeValue -> ", doseNumberTypeValue);
 
     const amtOfDoseNumberType = selectedDoseNumbers.filter(
-      (d) => d === doseNumberType
+      (d) => d === doseNumberTypeValue
     ).length;
     DEBUG && console.log("amtOfDoseNumberType -> ", amtOfDoseNumberType);
 
@@ -82,7 +99,7 @@ export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose
     DEBUG && console.log("disabledDoseType -> ", disableDoseType);
 
     doseNumbers.value = doseNumbers.value.map((d) => {
-      if (d.value === doseNumberType) d.disabled = disableDoseType;
+      if (d.value === doseNumberTypeValue) d.disabled = disableDoseType;
       return d;
     });
   }
@@ -91,6 +108,7 @@ export const ManageDisabledDoseNumbers = (doses: { id: number; dose: VaccineDose
 
 
 interface DoseNumberForChipSelector {
+  name: string;
   value: string;
   disabled: boolean;
 }

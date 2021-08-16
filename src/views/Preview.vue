@@ -39,7 +39,7 @@ import {
   IonBackButton,
   IonButtons,
 } from "@ionic/vue";
-import { computed, defineComponent, inject } from "vue";
+import { computed, defineComponent, inject, Ref } from "vue";
 import { useRouter } from "vue-router";
 import {
   arrowBack as backIcon,
@@ -64,11 +64,13 @@ export default defineComponent({
       const parsed = JSON.parse(props.unformattedCard) as Card;
       return FormatVaccineCard(parsed);
     });
+    const editingCard = inject("editingCard") as Ref<Card | undefined>;
 
     DEBUG && console.log("Card from /editor -> ", card.value);
 
     const goBack = () => {
       nudge();
+      if (props.mode === "edit") editingCard.value = card.value;
       router.back();
     };
     const saveCardAndLeave = () => {

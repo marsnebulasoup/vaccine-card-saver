@@ -24,7 +24,7 @@
     >
       <bbq-chip
         v-for="(item, index) in items"
-        :label="item.value"
+        :label="item.name"
         :key="index"
         :color="color"
         :disabled="item.disabled && selected !== item.value"
@@ -61,7 +61,7 @@ export default defineComponent({
   name: "ChipSelector",
   emits: ["update:modelValue"],
   setup(props, { emit }) {
-    const DEBUG = false;
+    const DEBUG = true;
 
     const item = ref();
     const selected = ref(props.modelValue || "");
@@ -75,12 +75,13 @@ export default defineComponent({
     }) => {
       // if disabled but already selected, unselect on click
       if (disabled && selected.value === value) {
-        DEBUG && console.log("Already selected and disabled, unselecting");
+        DEBUG &&
+          console.log(`Already selected and disabled "${value}, unselecting`);
         selected.value = "";
       }
       // if not disabled, unselect if already selected or select if unselected
       else if (!disabled) {
-        DEBUG && console.log("Not disabled,");
+        DEBUG && console.log(`"${value}" is not disabled,`);
         if (selected.value === value) {
           selected.value = "";
           DEBUG && console.log("...unselecting");
@@ -101,7 +102,7 @@ export default defineComponent({
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: PointerEvent) => {
-      nudge()
+      nudge();
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -119,9 +120,17 @@ export default defineComponent({
     watch(
       () => selected.value,
       (itemsAreSelected) => {
-        console.log("itemsAreSelected, ", itemsAreSelected);
+        DEBUG &&
+          console.log(
+            "Chips are selected, removing error. Selected: '",
+            itemsAreSelected,
+            "'"
+          );
         if (itemsAreSelected) removeError();
-        else addError(props.errorMsg || `${props.name} is required.`);
+        else {
+          DEBUG && console.log("Chips are NOT selected, adding error.");
+          addError(props.errorMsg || `${props.name} is required.`);
+        }
       },
       { immediate: true }
     );
@@ -173,8 +182,8 @@ export default defineComponent({
     },
     popover: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
     "bbq-chip": BBQChip,

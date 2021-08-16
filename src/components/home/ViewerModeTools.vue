@@ -26,12 +26,13 @@ import { useRouter } from "vue-router";
 import ToolFab from "../other/buttons/ToolFab.vue";
 import InfoCard from "../other/cards/InfoCard.vue";
 import { handleDelete } from "@/utils/other/AlertHandler";
+import ShareHandler from "@/utils/other/ShareHandler";
 export default defineComponent({
   name: "ViewerModeTools",
   setup(props) {
     const router = useRouter();
     const cards: CardHandler = inject("CardHandler") as CardHandler;
-    const editingCardId = inject("editingCardId") as Ref<number | undefined>;
+    const editingCard = inject("editingCard") as Ref<Card | undefined>;
     const openOrCloseViewerMode = inject("openOrCloseViewerMode") as (
       card: Card | undefined,
       ev: any,
@@ -40,13 +41,15 @@ export default defineComponent({
 
     const handleShare = () => {
       nudge();
-      console.log("Sharing");
+      if(props.card) ShareHandler(props.card as Card);
+
+      // console.log("Sharing");
     };
     const handleEdit = () => {
       nudge();
       console.log("Editing");
       router.push("editor");
-      editingCardId.value = props?.card?.id;
+      editingCard.value = props.card as Card
     };
 
     const deleteCard = () => {

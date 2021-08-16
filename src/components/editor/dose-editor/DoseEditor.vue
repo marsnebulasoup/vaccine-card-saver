@@ -108,6 +108,7 @@ export default defineComponent({
 
     const dose = ref(props.dose);
     const inputs = ref({
+      id: dose.value.id,
       doseNumber: dose.value.doseNumber,
       brand: dose.value.brand,
       date: dose.value.date,

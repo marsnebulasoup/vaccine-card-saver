@@ -32,6 +32,7 @@ export function FormatVaccineCard(card: Card) {
 
 
 export class VaccineDose {
+  id: number;
   doseNumber: string;
   brand: string;
   date: string;
@@ -39,16 +40,18 @@ export class VaccineDose {
   dateFormatted: string;
   administeredByOrAt: string;
   constructor(
-    { doseNumber, brand, date, administeredByOrAt, lot }:
-      { doseNumber: string; brand: string; date: string; administeredByOrAt: string; lot: string }
+    { id, doseNumber, brand, date, administeredByOrAt, lot }:
+      { id: number; doseNumber: string; brand: string; date: string; administeredByOrAt: string; lot: string }
   ) {
+    this.id = id;
     this.doseNumber = doseNumber //this.processDoseNumber(doseNumber) || "N/A"
     this.brand = this.processBrands(brand)
 
     const isDate = DateUtils.isDate(date);
     this.date = isDate ? isDate.toISOString() : "";
 
-    this.dateFormatted = DateUtils.formatDate(date)
+    const formattedDate = DateUtils.formatDate(date)
+    this.dateFormatted = formattedDate === "N/A" ? "" : formattedDate
     this.administeredByOrAt = administeredByOrAt || "";
     this.lot = lot || "";
   }
@@ -64,12 +67,13 @@ export class VaccineDose {
   }
 
   get FormattedDose() {
-    const processedDoseNumber = this.processDoseNumber(this.doseNumber);
+    // const processedDoseNumber = this.processDoseNumber(this.doseNumber);
     const dose: Dose = {
-      doseNumber: processedDoseNumber ? processedDoseNumber : DoseNumbers.Other,//this.doseNumber !== "N/A" ? this.doseNumber as DoseNumbers : DoseNumbers.Other,
+      id: this.id,
+      doseNumber: this.doseNumber as DoseNumbers || "N/A", //processedDoseNumber ? processedDoseNumber : DoseNumbers.Other,//this.doseNumber !== "N/A" ? this.doseNumber as DoseNumbers : DoseNumbers.Other,
       brand: this.brand || "N/A",
       date: this.date || "N/A",
-      dateFormatted: this.dateFormatted,
+      dateFormatted: this.dateFormatted || "N/A",
       administeredByOrAt: this.administeredByOrAt || "N/A",
       lot: this.lot || "N/A"
     }
@@ -95,6 +99,7 @@ export interface Card {
 
 
 export interface Dose {
+  id: number;
   doseNumber: DoseNumbers; // Hardcoded for now since the design of the card would have to change to add more doses
   brand: string;
   date: string;

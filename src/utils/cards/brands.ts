@@ -47,6 +47,7 @@ class Brands {
   get allBrandsForChipSelector() {
     return this.allBrandsNames.map(brand => {
       return {
+        name: brand,
         value: brand,
         disabled: false
       }

@@ -3,7 +3,10 @@
     <ion-header class="ion-no-border" mode="ios" collapse="condense">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button @click.passive="tap()" :mode="platform"></ion-back-button>
+          <ion-back-button
+            @click.passive="tap()"
+            :mode="platform"
+          ></ion-back-button>
         </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
@@ -28,7 +31,7 @@
           >Vaccine Information</caption-text
         >
       </div>
-      <doses></doses>
+      <doses v-model="content.doses"></doses>
     </ion-content>
     <full-width-button @click="submitForm()" :iconRight="continueIcon"
       >Continue</full-width-button
@@ -47,7 +50,7 @@ import {
   onIonViewWillEnter,
   onIonViewDidEnter,
 } from "@ionic/vue";
-import { defineComponent, inject, provide, Ref, ref, toRef } from "vue";
+import { defineComponent, inject, provide, Ref, ref } from "vue";
 import { useRouter } from "vue-router";
 import PersonalInfoForm from "@/components/editor/personal-info-form/PersonalInfoForm.vue";
 import CaptionText from "@/components/other/text/CaptionText.vue";
@@ -65,9 +68,9 @@ import { tap } from "@/utils/haptics";
 export default defineComponent({
   name: "Editor",
   inject: ["platform"],
-  setup(props) {
+  setup() {
     const cards: CardHandler = inject("CardHandler") as CardHandler;
-    const editingCardId = inject("editingCardId") as Ref<number | undefined>;
+    const editingCard = inject("editingCard") as Ref<Card | undefined>;
     const isInEditingMode = ref(false);
 
     const router = useRouter();
@@ -100,13 +103,11 @@ export default defineComponent({
           doses: [],
         };
       }
-      if (editingCardId.value !== undefined) {
-        console.log("In Editing Mode, cardId is ", editingCardId.value);
+      if (editingCard.value !== undefined) {
+        console.log("In Editing Mode, cardId is ", editingCard.value.id);
         isInEditingMode.value = true;
-        const cardToEdit = cards.getCard(editingCardId.value);
-        if (cardToEdit)
-          content.value = cards.getCardForEditing(editingCardId.value);
-        editingCardId.value = undefined;
+        content.value = cards.formatCardForEditing(editingCard.value);
+        editingCard.value = undefined;
       } else isInEditingMode.value = false;
     });
 
@@ -123,7 +124,7 @@ export default defineComponent({
           name: "Preview",
           params: {
             unformattedCard: JSON.stringify(content.value),
-            mode: isInEditingMode.value ? "edit" : "add"
+            mode: isInEditingMode.value ? "edit" : "add",
           },
         })
       );

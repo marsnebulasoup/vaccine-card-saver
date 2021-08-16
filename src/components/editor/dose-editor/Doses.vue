@@ -1,22 +1,22 @@
 <template>
   <section>
-    <error-details v-if="DEBUG" title="Doses" :data="doses" />
+    <error-details v-if="DEBUG" title="Doses" :data="modelValue" />
     <error-details v-if="DEBUG" title="Dose Numbers" :data="doseNumbers" />
     <transition-group @enter="enter" @leave="leave" :css="false">
       <dose-editor
-        v-for="(dose, index) in doses"
+        v-for="(dose, index) in iterableDoses"
         :key="dose.id"
-        :dose="dose.dose"
-        @doseModified="doses[index].dose = $event"
-        @removeEditor="removeADose(index)"
+        :dose="dose"
+        @doseModified="modifyDose(index, $event)"
+        @removeEditor="removeDose(dose.id)"
         :class="{
-          'this-is-the-last-dose-editor': index === doses.length - 1,
+          'this-is-the-last-dose-editor': index === iterableDoses.length - 1,
         }"
       ></dose-editor>
     </transition-group>
     <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
       <add-a-dose
-        v-if="doses.length < MAX_DOSES"
+        v-if="iterableDoses.length < MAX_DOSES"
         @click="addADose()"
         ref="addDoseCard"
       ></add-a-dose>
@@ -31,13 +31,16 @@
 
 <script lang="ts">
 import {
+  computed,
+  customRef,
   defineComponent,
   inject,
-  onMounted,
   provide,
   Ref,
   ref,
+  toRef,
   watch,
+  WritableComputedRef,
 } from "vue";
 import AddADose from "./AddADose.vue";
 import DoseEditor from "./DoseEditor.vue";
@@ -45,85 +48,85 @@ import ListAnimations from "@/utils/animations/list";
 import scrollIntoView from "scroll-into-view";
 import { Errors, ErrorHandlers } from "@/utils/other/ErrorHandlers";
 import ValidationPopoverWrapper from "@/components/other/popover/ValidationPopoverWrapper.vue";
-import { Card, Dose, VaccineDose } from "@/utils/cards/card";
+import { Dose, VaccineDose } from "@/utils/cards/card";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 import {
   CreateNewDoseNumberArrayForChipSelector,
   FormatDosesForEditing,
-  ManageDisabledDoseNumbers,
+  generateDoseId,
+  UpdateDisabledDoseNumbers,
 } from "@/utils/other/DoseNumbersHandler";
-import { notify, nudge } from "@/utils/haptics";
+import { notify } from "@/utils/haptics";
 import { handleDelete } from "@/utils/other/AlertHandler";
 import { NotificationType } from "@capacitor/haptics";
 
 export default defineComponent({
   name: "Doses",
-  setup() {
+  emits: ["update:modelValue"],
+  props: {
+    modelValue: {
+      type: Array,
+      required: true,
+    },
+  },
+  setup(props, { emit }) {
     const MAX_DOSES = 4;
-    // TODO: actually type out this 👇 type so it can be imported in DoseNumberHandler.ts also
-    const doses = ref<{ id: number; dose: VaccineDose }[]>([]);
-    const content: Ref<Card> = inject("content") as Ref<Card>;
+
+    const doses = toRef(props, "modelValue") as Readonly<Ref<Dose[]>>;
 
     const doseNumbers = CreateNewDoseNumberArrayForChipSelector();
     provide("DoseNumbers", doseNumbers);
 
-    watch(
-      doses,
-      (doses) => {
-        if (doses.length) {
-          content.value.doses = doses.map((dose) => dose.dose.FormattedDose);
-          ManageDisabledDoseNumbers(doses, doseNumbers);
-        }
+    const iterableDoses: WritableComputedRef<VaccineDose[]> = computed({
+      get() {
+        return FormatDosesForEditing(doses.value);
       },
-      { deep: true }
-    );
+      set(newDoses): void {
+        const formattedDoses = newDoses.map((dose) => dose.FormattedDose);
+        emit("update:modelValue", formattedDoses);
+        UpdateDisabledDoseNumbers(newDoses, doseNumbers);
+      },
+    });    
 
-    const count = ref(0);
-    const addADose = (dose?: Dose) => {
-      doses.value.push({
-        id: count.value,
-        dose: new VaccineDose({
-          doseNumber: dose?.doseNumber || "",
-          brand: dose?.brand || "",
-          date: dose?.date || "",
-          lot: dose?.lot || "",
-          administeredByOrAt: dose?.administeredByOrAt || "",
+    // const count = ref(0);
+    const addADose = () => {
+      iterableDoses.value = [
+        ...iterableDoses.value,
+        new VaccineDose({
+          id: generateDoseId(iterableDoses.value),//count.value,
+          doseNumber: "",
+          brand: "",
+          date: "",
+          lot: "",
+          administeredByOrAt: "",
         }),
-      });
-      count.value++;
+      ];
+      // count.value++;
 
-      // animate scroll but not if adding pre-filled doses, because that's done on the page load
-      dose ||
-        setTimeout(() => {
-          // let the animation start playing before starting the scroll,
-          // or it won't even scroll, because the new dose editor element
-          // can't be located until then.
-          const card = document.querySelector(
-            ".this-is-the-last-dose-editor"
-          ) as HTMLElement;
-          if (card) scrollIntoView(card, { time: 125 });
-        }, 50);
+      // animate scroll
+      setTimeout(() => {
+        // let the animation start playing before starting the scroll,
+        // or it won't even scroll, because the new dose editor element
+        // can't be located until then.
+        const card = document.querySelector(
+          ".this-is-the-last-dose-editor"
+        ) as HTMLElement;
+        if (card) scrollIntoView(card, { time: 125 });
+      }, 50);
     };
 
-    // Reset doses when view is re-navigated to and load doses if in editing mode
-    onMounted(() => {
-      doses.value = [];
-      count.value = 0;
-      const stop = watch(
-        () => content.value.doses,
-        () => {
-          doses.value = FormatDosesForEditing(content.value.doses);
-          stop();
-        },
-        { deep: true }
-      );
-      content.value.doses.forEach((dose) => console.log(dose));
-    });
+    const modifyDose = (index: number, newDose: VaccineDose) => {
+      const copy = [...iterableDoses.value];
+      copy.splice(index, 1, newDose);
+      iterableDoses.value = copy;
+    };
 
-    const removeADose = (index: number) => {
+    const removeDose = (id: number) => {
       handleDelete({ header: "Delete this dose?" }, () => {
         notify({ type: NotificationType.Success });
-        doses.value.splice(index, 1);
+        iterableDoses.value = iterableDoses.value.filter(
+          (dose) => dose.id !== id
+        );
       });
     };
 
@@ -150,9 +153,11 @@ export default defineComponent({
     return {
       MAX_DOSES,
       doses,
+      iterableDoses,
       addDoseCard,
       addADose,
-      removeADose,
+      modifyDose,
+      removeDose,
       isValidatorErrorVisible,
       validatorErrorMsg,
       validatorErrorEl,

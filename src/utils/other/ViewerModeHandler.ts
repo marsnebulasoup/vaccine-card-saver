@@ -25,6 +25,26 @@ const findCardEl = (ev: any) => {
   });
 }
 
+const getBrightness = async (initialBrightness: Ref<number>) => {
+  const DEBUG = false;
+  try {
+    const info = await ScreenBrightness.getBrightness()
+    initialBrightness.value = info.brightness
+    return
+  } catch (error) {
+    DEBUG && console.error(error)
+  }
+}
+
+const setBrightness = (newBrightness: number) => {
+  const DEBUG = false;
+  try {
+    ScreenBrightness.setBrightness({ brightness: newBrightness })
+  } catch (error) {
+    DEBUG && console.error(error)
+  }
+}
+
 export const ViewerModeHandler = (page: Ref) => {
   /*
   Basic flow of the Viewer Mode
@@ -66,14 +86,13 @@ export const ViewerModeHandler = (page: Ref) => {
   const cardInViewerMode = ref<Card>();
   const initialBrightness = ref<number>(0.5);
 
-  ScreenBrightness.getBrightness()
-    .then(info => initialBrightness.value = info.brightness)
+  getBrightness(initialBrightness)
 
   router.beforeEach((to, from, next) => {
     if (isInViewerMode.value && to.name === "Home") {
-      ScreenBrightness.setBrightness({ brightness: 1 })
+      setBrightness(1)
     }
-    else ScreenBrightness.setBrightness({ brightness: initialBrightness.value })
+    else setBrightness(initialBrightness.value)
     next()
   })
 
@@ -97,13 +116,11 @@ export const ViewerModeHandler = (page: Ref) => {
         },
       }, () => isLeavingViewerMode.value = false), 100);
 
-      ScreenBrightness.setBrightness({ brightness: initialBrightness.value })
+      setBrightness(initialBrightness.value)
     }
     else {
       isInViewerMode.value = true;
-      ScreenBrightness.getBrightness()
-        .then(info => initialBrightness.value = info.brightness)
-        .then(() => ScreenBrightness.setBrightness({ brightness: 1 }))
+      getBrightness(initialBrightness).then(() => setBrightness(1))
       page.value.$el.scrollToTop()
 
     }

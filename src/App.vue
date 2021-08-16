@@ -11,6 +11,7 @@ import { useRouter } from "vue-router";
 import Transitions from "./utils/PageTransition";
 import CardHandler from "@/utils/cards";
 import Brands from "@/utils/cards/brands";
+import { Card } from "./utils/cards/card";
 export default defineComponent({
   name: "App",
   components: {
@@ -36,7 +37,7 @@ export default defineComponent({
     provide("VaccineBrands", new Brands());
     provide("platform", isPlatform("ios") ? "ios" : "md");
     provide("resetEditor", resetEditor);
-    provide("editingCardId", ref<number>())
+    provide("editingCard", ref<Card>())
   },
 });
 </script>

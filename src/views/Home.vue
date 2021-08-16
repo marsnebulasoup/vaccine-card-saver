@@ -25,7 +25,7 @@
         subtitle="Tips"
         subtitleColor="success"
         color="green"
-        title="You can edit, share, or delete cards by clicking on them"
+        title="You can edit, share, or delete cards by clicking on them."
         deleteId="tips"
       />
 
@@ -120,6 +120,7 @@ export default defineComponent({
         patientNumber: "2837529873894",
         doses: [
           {
+            id: 0,
             doseNumber: "1" as DoseNumbers,
             brand: "Pfizer",
             date: "2021-08-13T20:25:32.098Z",
@@ -128,6 +129,7 @@ export default defineComponent({
             lot: "KS2384",
           },
           {
+            id: 1,
             doseNumber: "2" as DoseNumbers,
             brand: "Pfizer",
             date: "2021-08-13T20:25:32.098Z",
