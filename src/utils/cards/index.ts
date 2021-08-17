@@ -46,6 +46,7 @@ class CardHandler {
   }
 
   formatCardForEditing(card: Card) {
+    card = JSON.parse(JSON.stringify(card)) // kills references to other objects so this doesn't cause unexpected problems
     if (card) {
       card.lastName = card.lastName.replace("N/A", "");
       card.firstName = card.firstName.replace("N/A", "");

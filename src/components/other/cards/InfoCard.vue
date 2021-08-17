@@ -48,7 +48,7 @@ import CaptionText from "../text/CaptionText.vue";
 import InfoCard from "@/utils/other/InfoCardHandler";
 
 export default defineComponent({
-  name: "ViewerModeTools",
+  name: "InfoCard",
   setup(props) {
     const exists = InfoCard(props.deleteId);
 

@@ -29,6 +29,36 @@ export function FormatVaccineCard(card: Card) {
   return card
 }
 
+export function FormatVaccineCardAsText(card: Card) {
+  const BoldDoseNumberMap = {
+    "1": "𝟭",
+    "2": "𝟮",
+    "Other": "𝗢𝘁𝗵𝗲𝗿"
+  }
+  const text = `
+  ℹ️ 𝗗𝗲𝘁𝗮𝗶𝗹𝘀
+
+    𝗡𝗮𝗺𝗲 - ${card.name}
+    𝗗𝗢𝗕 - ${card.dobFormatted}
+    𝗣𝗮𝘁𝗶𝗲𝗻𝘁 𝗡𝘂𝗺𝗯𝗲𝗿 - ${card.patientNumber}
+    𝗙𝘂𝗹𝗹𝘆 𝗩𝗮𝗰𝗰𝗶𝗻𝗮𝘁𝗲𝗱 - ${card.fullyVaccinated ? "Yes" : "No"}
+
+  💉 𝗗𝗼𝘀𝗲𝘀
+    ${card.doses.map(dose => {
+      return `
+      #${BoldDoseNumberMap[dose.doseNumber] || dose.doseNumber} - ${dose.brand} (${dose.lot}),
+        𝗼𝗻 ${dose.dateFormatted},
+        𝗮𝗱𝗺𝗶𝗻𝗶𝘀𝘁𝗲𝗿𝗲𝗱 𝗯𝘆/𝗮𝘁 ${dose.administeredByOrAt}
+      `
+    }).join("—")}
+  `
+  return text
+}
+
+// export interface Dose {
+//   administeredByOrAt: string;
+//   lot: string;
+// }
 
 
 export class VaccineDose {

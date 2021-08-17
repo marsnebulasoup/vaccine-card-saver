@@ -2,5 +2,8 @@
 	"appId": "io.ionic.starter",
 	"appName": "vaccine-card-saver",
 	"webDir": "dist",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"server": {
+		"url": "http://192.168.1.76:8100"
+	}
 }

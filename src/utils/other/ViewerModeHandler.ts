@@ -5,7 +5,7 @@ import { Card } from "../cards/card";
 import { ScreenBrightness } from '@capacitor-community/screen-brightness';
 import { useRouter } from 'vue-router';
 
-const findCardEl = (ev: any) => {
+export const findCardEl = (ev: any) => {
   if (typeof ev === "number") {
     try {
       const el = document.querySelector(`[data-vaccine-card-id="${ev}"]`)
@@ -38,8 +38,9 @@ const getBrightness = async (initialBrightness: Ref<number>) => {
 
 const setBrightness = (newBrightness: number) => {
   const DEBUG = false;
+  const NO_BRIGHTNESS = true; // TODO: set to false for production build
   try {
-    ScreenBrightness.setBrightness({ brightness: newBrightness })
+    NO_BRIGHTNESS || ScreenBrightness.setBrightness({ brightness: newBrightness })
   } catch (error) {
     DEBUG && console.error(error)
   }

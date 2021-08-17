@@ -11,7 +11,7 @@
         <wrappable-title>Your Cards</wrappable-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content ref="page" :fullscreen="true">
+    <ion-content ref="page" :fullscreen="true" id="homepage">
       <add-a-card
         v-if="!cards.allCards.value.length"
         @addCard="openEditor()"
