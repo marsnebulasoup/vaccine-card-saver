@@ -4,6 +4,7 @@ import { Ref, ref } from "vue";
 import { Card } from "../cards/card";
 import { ScreenBrightness } from '@capacitor-community/screen-brightness';
 import { useRouter } from 'vue-router';
+import { useBackButton } from '@ionic/vue';
 
 export const findCardEl = (ev: any) => {
   if (typeof ev === "number") {
@@ -46,6 +47,8 @@ const setBrightness = (newBrightness: number) => {
     DEBUG && console.error(error)
   }
 }
+
+
 
 export const ViewerModeHandler = (page: Ref) => {
   /*
@@ -90,14 +93,6 @@ export const ViewerModeHandler = (page: Ref) => {
 
   getBrightness(initialBrightness)
 
-  router.beforeEach((to, from, next) => {
-    if (isInViewerMode.value && to.name === "Home") {
-      setBrightness(1)
-    }
-    else setBrightness(initialBrightness.value)
-    next()
-  })
-
   const openOrCloseViewerMode = (card: Card | undefined, ev: any, vibrate?: boolean) => {
     DEBUG && console.log("Viewermode click event -> ", ev);
 
@@ -128,6 +123,7 @@ export const ViewerModeHandler = (page: Ref) => {
     }
   };
 
+
   const shouldHideCard = (card: Card) => {
     const shouldHide =
       isLeavingViewerMode.value && cardInViewerMode.value?.id !== card.id;
@@ -141,6 +137,29 @@ export const ViewerModeHandler = (page: Ref) => {
     DEBUG && console.log(`Should completely hide card with name ${card.name} -> `, shouldHide);
     return shouldHide;
   };
+
+
+  const registerBackButtonHandler = () => {
+    return useBackButton(9, (processNextHandler) => {
+      if (isInViewerMode.value) openOrCloseViewerMode(undefined, cardInViewerMode.value?.id, false)
+      processNextHandler()
+    }).unregister;
+  }
+
+  let unregisterBackButtonHandler = registerBackButtonHandler()
+
+  router.beforeEach((to, from, next) => {
+    unregisterBackButtonHandler()
+    if (to.name === "Home") {
+      unregisterBackButtonHandler = registerBackButtonHandler()
+
+      if (isInViewerMode.value) {
+        setBrightness(1)
+      }
+    }
+    else setBrightness(initialBrightness.value)
+    next()
+  })
 
   return {
     isInViewerMode,

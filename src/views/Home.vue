@@ -29,7 +29,6 @@
         deleteId="tips"
       />
 
-
       <transition-group @enter="enter" @leave="leave" :css="false">
         <vaccine-card
           v-for="card in cards.allCards.value"
@@ -59,6 +58,12 @@
         <error-details title="Cards" :data="cards.allCards.value" />
       </div>
 
+      <ion-icon
+        v-if="isInViewerMode"
+        @click="openOrCloseViewerMode(undefined, cardInViewerMode.id)"
+        class="exit-viewer-mode-icon"
+        :icon="exitViewerModeIcon"
+      ></ion-icon>
       <fab :class="{ invisible: isInViewerMode }" @click="openEditor()" />
     </ion-content>
   </ion-page>
@@ -70,6 +75,7 @@ import {
   IonHeader,
   IonPage,
   IonToolbar,
+  IonIcon,
   onIonViewDidEnter,
 } from "@ionic/vue";
 import { defineComponent, inject, provide, ref } from "vue";
@@ -87,6 +93,7 @@ import { ViewerModeHandler } from "@/utils/other/ViewerModeHandler";
 import ViewerModeTools from "@/components/home/ViewerModeTools.vue";
 import { nudge } from "@/utils/haptics";
 import InfoCard from "@/components/other/cards/InfoCard.vue";
+import { closeOutline as exitViewerModeIcon } from "ionicons/icons";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export default defineComponent({
@@ -163,6 +170,7 @@ export default defineComponent({
       DEBUG,
       isInViewerMode,
       isLeavingViewerMode,
+      exitViewerModeIcon,
       cardInViewerMode,
       openOrCloseViewerMode,
       shouldHideCard,
@@ -177,6 +185,7 @@ export default defineComponent({
     IonHeader,
     IonPage,
     IonToolbar,
+    IonIcon,
     AddACard,
     WrappableTitle,
     VaccineCard,
@@ -195,6 +204,13 @@ export default defineComponent({
 
 ion-title {
   font-weight: 800;
+}
+
+.exit-viewer-mode-icon {
+  position: fixed;
+  top: 30px;
+  right: 15px;
+  font-size: 30px;
 }
 
 .invisible {

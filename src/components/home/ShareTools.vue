@@ -1,7 +1,7 @@
 <template>
   <div class="i-hide-everything">
     <ion-header class="ion-no-border" mode="ios">
-      <ion-toolbar style="margin-top: 0 !important;">
+      <ion-toolbar style="margin-top: 0 !important">
         <ion-buttons slot="start">
           <ion-back-button
             default-href="home"
@@ -36,7 +36,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+} from "vue";
 import {
   IonProgressBar,
   IonSkeletonText,
@@ -44,6 +51,7 @@ import {
   IonToolbar,
   IonButtons,
   IonBackButton,
+  useBackButton,
 } from "@ionic/vue";
 import WrappableTitle from "../other/text/WrappableTitle.vue";
 import { nudge } from "@/utils/haptics";
@@ -91,12 +99,14 @@ export default defineComponent({
       }
     };
 
-    const exitSharingMode = () => {
-      nudge();
+    const exitSharingMode = (silent = false) => {
+      silent || nudge();
       emit("exitSharingMode");
     };
 
+    let unregisterBackButtonHandler: Function;
     onMounted(() => {
+      unregisterBackButtonHandler = useBackButton(10, () => exitSharingMode(true)).unregister;
       ShareHandler(props.card as Card)
         .then((acts) => {
           // acts is short for actions because I can't think of a better name 😑
@@ -108,6 +118,8 @@ export default defineComponent({
           console.error(error);
         });
     });
+
+    onBeforeUnmount(() => unregisterBackButtonHandler());
 
     return { image, shouldFadeImageBackground, handleShare, exitSharingMode };
   },
