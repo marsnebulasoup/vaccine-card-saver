@@ -149,7 +149,7 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const DEBUG = true;
+    const DEBUG = false; // was true;
     return {
       MAX_DOSES,
       doses,

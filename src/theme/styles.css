@@ -55,7 +55,7 @@ ion-header ion-toolbar:first-of-type {
   border-bottom-left-radius: 5px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
-  background: oldlace;
+  background: var(--ion-color-super-light);
 }
 
 .input-container .icon {
@@ -71,4 +71,11 @@ ion-header ion-toolbar:first-of-type {
 
 .delete-card-alert .delete {
   color: var(--ion-color-danger);
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-card {
+    box-shadow: none;
+    border: 2px solid var(--ion-border-color, #222222)
+  }
 }

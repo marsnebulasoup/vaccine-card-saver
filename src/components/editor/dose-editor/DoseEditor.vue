@@ -125,7 +125,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    const DEBUG = true;
+    const DEBUG = false; // was true;
     return {
       doseNumbers,
       brandNames,

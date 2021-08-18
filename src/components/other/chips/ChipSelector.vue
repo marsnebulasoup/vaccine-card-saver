@@ -61,7 +61,7 @@ export default defineComponent({
   name: "ChipSelector",
   emits: ["update:modelValue"],
   setup(props, { emit }) {
-    const DEBUG = true;
+    const DEBUG = false; // was true;
 
     const item = ref();
     const selected = ref(props.modelValue || "");

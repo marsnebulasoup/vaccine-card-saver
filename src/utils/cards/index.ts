@@ -3,7 +3,7 @@ import { Card, FormatVaccineCard } from './card';
 import Cards from './cards';
 
 
-const DEBUG = true;
+const DEBUG = false; // was true;
 
 class CardHandler {
   cards: Ref<Card[]>;

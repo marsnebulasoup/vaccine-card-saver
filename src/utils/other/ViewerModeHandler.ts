@@ -40,7 +40,7 @@ const getBrightness = async (initialBrightness: Ref<number>) => {
 
 const setBrightness = (newBrightness: number) => {
   const DEBUG = false;
-  const NO_BRIGHTNESS = true; // TODO: set to false for production build
+  const NO_BRIGHTNESS = false; // TODO: set to false for production build
   try {
     NO_BRIGHTNESS || ScreenBrightness.setBrightness({ brightness: newBrightness })
   } catch (error) {
@@ -142,7 +142,7 @@ export const ViewerModeHandler = (page: Ref) => {
   const registerBackButtonHandler = () => {
     return useBackButton(9, (processNextHandler) => {
       if (isInViewerMode.value) openOrCloseViewerMode(undefined, cardInViewerMode.value?.id, false)
-      processNextHandler()
+      // processNextHandler()
     }).unregister;
   }
 

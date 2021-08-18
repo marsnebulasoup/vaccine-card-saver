@@ -34,7 +34,7 @@ export const DoseNumbersInfo: {
 }
 
 export const generateDoseId = (doses: VaccineDose[]): number => {
-  const DEBUG = true;
+  const DEBUG = false; // was true;
   const ids = doses.map(dose => dose.id);
   let id = 0;
   while (!id || ids.includes(id)) {

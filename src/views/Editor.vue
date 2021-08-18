@@ -130,7 +130,7 @@ export default defineComponent({
       );
     };
 
-    const DEBUG = true;
+    const DEBUG = false; // was true;
     return {
       DEBUG,
       tap,

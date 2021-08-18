@@ -3,7 +3,7 @@
     <ion-card-content>
       <ion-item>
         <ion-icon :icon="addOutline"></ion-icon>
-        <caption-text :size="20" color="light"
+        <caption-text :size="20" color="medium"
           >Add A Dose</caption-text
         >
       </ion-item>
@@ -45,7 +45,7 @@ ion-item {
 }
 
 ion-icon {
-  color: var(--ion-color-light);
+  color: var(--ion-color-medium);
   font-size: 28px;
 }
 </style>

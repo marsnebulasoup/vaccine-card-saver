@@ -212,7 +212,7 @@ ion-checkbox {
   border: none;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-  background: oldlace;
+  background: var(--ion-color-super-light);
 }
 
 .placeholder {

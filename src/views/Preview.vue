@@ -57,7 +57,7 @@ export default defineComponent({
   name: "Home",
   inject: ["platform"],
   setup(props) {
-    const DEBUG = true;
+    const DEBUG = false; // was true;
     const router = useRouter();
     const cards: CardHandler = inject("CardHandler") as CardHandler;
     const card = computed(() => {
