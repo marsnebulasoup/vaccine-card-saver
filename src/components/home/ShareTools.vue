@@ -1,7 +1,7 @@
 <template>
   <div class="i-hide-everything">
     <ion-header class="ion-no-border" mode="ios">
-      <ion-toolbar>
+      <ion-toolbar style="margin-top: 0 !important;">
         <ion-buttons slot="start">
           <ion-back-button
             default-href="home"
