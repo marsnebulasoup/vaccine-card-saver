@@ -9,7 +9,7 @@
       >
         <ion-card-content class="center-everything">
           <ion-icon :icon="card.icon"></ion-icon>
-          <caption-text size="3.5vw" style="margin-top: 10px;" :inline="false">{{
+          <caption-text size="3.5vw" style="margin-top: 10px" :inline="false">{{
             card.caption
           }}</caption-text>
         </ion-card-content>
@@ -97,7 +97,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
 .cards-container {
   display: grid;
   padding: 35px;

@@ -14,7 +14,7 @@
         <wrappable-title>Share this card</wrappable-title>
       </ion-toolbar>
     </ion-header>
-    <div v-if="!image" class="container">
+    <div v-if="!image" class="center-me">
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
 
       <ion-skeleton-text
@@ -22,13 +22,14 @@
         style="width: 40vw; height: 28vh; margin-top: 30px; border-radius: 5px"
       ></ion-skeleton-text>
     </div>
-    <!-- 👉👉👉 make this sharing widget look nice -->
     <div v-else class="container">
-      <img
-        :src="image"
-        class="share-image"
-        :class="{ 'fade-share-image-background': shouldFadeImageBackground }"
-      />
+      <div class="center-me">
+        <img
+          :src="image"
+          class="share-image"
+          :class="{ 'fade-share-image-background': shouldFadeImageBackground }"
+        />
+      </div>
       <share-buttons @share="handleShare($event)" />
     </div>
   </div>
@@ -137,19 +138,30 @@ export default defineComponent({
   width: 100vw;
   height: 100vh;
   z-index: 999;
-  background: white;
+  background: var(--ion-background-color, white);
   overflow-y: scroll;
 }
 
+@media (prefers-color-scheme: dark) {
+  .i-hide-everything {
+    background: black; /* TODO make this a lighter black for md theme */
+  }
+}
+
 .container {
+  display: block;
+  width: 100%;
+  height: fit-content;
+}
+
+.center-me {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
+  width: 100%;
   justify-content: center;
   align-content: center;
   align-items: center;
-  width: 100%;
-  height: fit-content;
-  flex-direction: column;
 }
 
 .share-image {
