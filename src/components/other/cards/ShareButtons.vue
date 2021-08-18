@@ -48,7 +48,8 @@ export default defineComponent({
     ]);
 
     const animate = async (ev: any) => {
-      const el: HTMLElement | undefined = ev.path.find((el: HTMLElement) => {
+      const path = ev.path || (ev.composedPath && ev.composedPath());
+      const el: HTMLElement | undefined = path.find((el: HTMLElement) => {
         try {
           if (el.getAttribute("data-is-actual-card") === "true") return true;
         } catch (e) {

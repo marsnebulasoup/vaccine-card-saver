@@ -41,12 +41,13 @@ async function SaveImage(image: string, id: Card["id"]) {
   return uri
 }
 
-function toast(message: string, duration = 500) {
+function toast(message: string, duration = 800) {
   toastController
     .create({
       message,
       duration,
       position: 'bottom',
+      mode: "ios"
     }).then(toast => toast.present())
 }
 
@@ -61,7 +62,10 @@ export default async function ShareHandler(card: Card) {
       text,
       url: imagePath,
       dialogTitle: 'Share this card',
-    });
+    }).catch(e => {
+      console.warn(e)
+      toast("Unable to share this image.")
+    })
   }
   const shareImgAndText = () => {
     shareImg(FormatVaccineCardAsText(card))
@@ -75,12 +79,20 @@ export default async function ShareHandler(card: Card) {
       image,
       label: `${card.firstName}'s COVID Vaccine Card`
     }).then(() => toast("Copied image."))
+      .catch(e => {
+        console.warn(e)
+        toast("Unable to copy image to clipboard.")
+      })
   }
   const copyText = () => {
     Clipboard.write({
       string: FormatVaccineCardAsText(card),
       label: `${card.firstName}'s COVID Vaccine Card`
     }).then(() => toast("Copied as text."))
+      .catch(e => {
+        console.warn(e)
+        toast("Unable to copy text to clipboard.")
+      })
   }
 
   return {

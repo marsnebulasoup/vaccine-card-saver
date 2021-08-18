@@ -16,7 +16,8 @@ export const findCardEl = (ev: any) => {
       console.error(e)
     }
   }
-  return ev.path.find((el: HTMLElement) => {
+  const path = ev.path || (ev.composedPath && ev.composedPath());
+  return path.find((el: HTMLElement) => {
     try {
       return el.getAttribute("data-vaccine-card-id") !== null;
     } catch (e) {
