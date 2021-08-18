@@ -4,13 +4,13 @@ export default {
   name: "CaptionText",
   render() {
     const El = this.inline ? "span" : "div";
+    const fontSize = `font-size: ${this.size}${
+      !isNaN(Number(this.size)) ? "px" : ""
+    } !important;`;
+    const wrapText = this.wrapText ? "white-space: break-spaces;" : "";
     return (
       <IonText color={this.color}>
-        <El
-          style={`font-size: ${this.size}px !important; 
-            ${this.wrapText ? "white-space: break-spaces;" : ""}`}
-          class="caption-text"
-        >
+        <El style={`${fontSize} ${wrapText}`} class="caption-text">
           {this.$slots.default()}
         </El>
       </IonText>

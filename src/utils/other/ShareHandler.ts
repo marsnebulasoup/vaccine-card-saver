@@ -64,7 +64,8 @@ export default async function ShareHandler(card: Card) {
       dialogTitle: 'Share this card',
     }).catch(e => {
       console.warn(e)
-      toast("Unable to share this image.")
+      if (e.message === "Share API not available in this browser") 
+        toast("Unable to share this image.")
     })
   }
   const shareImgAndText = () => {

@@ -1,20 +1,20 @@
 <template>
   <div class="cards-container">
-    <ion-card
-      v-for="(card, index) in cards"
-      :key="index"
-      mode="ios"
-      class="card center-everything"
-      @click="handleClicks($event, card)"
-      data-is-actual-card="true"
-    >
-      <ion-card-content class="center-everything">
-        <ion-icon :icon="card.icon"></ion-icon>
-        <caption-text style="margin-top: 10px" :inline="false">{{
-          card.caption
-        }}</caption-text>
-      </ion-card-content>
-    </ion-card>
+    <div v-for="(card, index) in cards" :key="index">
+      <ion-card
+        mode="ios"
+        class="card center-everything"
+        @click="handleClicks($event, card)"
+        data-is-actual-card="true"
+      >
+        <ion-card-content class="center-everything">
+          <ion-icon :icon="card.icon"></ion-icon>
+          <caption-text size="3.5vw" style="margin-top: 10px;" :inline="false">{{
+            card.caption
+          }}</caption-text>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </template>
 
@@ -97,13 +97,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* ion-card {
-  box-shadow: none;
-  --green: 132, 252, 148;
-  --red: 255, 94, 94;
-  --blue: 120, 200, 253;
-  --yellow: 228, 255, 110;
-} */
 
 .cards-container {
   display: grid;
@@ -114,11 +107,23 @@ export default defineComponent({
   justify-content: center;
   align-content: center;
   align-items: center;
+
+  width: 100%;
+  height: 100%;
 }
 
 .cards-container .card {
-  aspect-ratio: 1;
+  aspect-ratio: 1; /* next 11 lines are because safari doesn't fully support aspect-ratio 😑 */
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
   margin: 0;
+}
+
+.cards-container .card ion-card-content {
+  position: absolute;
+  top: 0;
+  height: 100%;
 }
 
 .center-everything {
