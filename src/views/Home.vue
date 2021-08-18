@@ -208,7 +208,7 @@ ion-title {
 
 .exit-viewer-mode-icon {
   position: fixed;
-  top: 30px;
+  top: 50px;
   right: 15px;
   font-size: 30px;
 }

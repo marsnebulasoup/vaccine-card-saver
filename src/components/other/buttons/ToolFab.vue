@@ -48,7 +48,7 @@ import {
   createOutline as editIcon,
   trash as deleteIcon,
   shareSocial as shareIconAndroid,
-  share as shareIconIos,
+  shareOutline as shareIconIos,
 } from "ionicons/icons";
 import { defineComponent, inject } from "@vue/runtime-core";
 import { nudge } from "@/utils/haptics";
