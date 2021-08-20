@@ -1,5 +1,5 @@
 <template>
-  <ion-card mode="ios" class="dose-card">
+  <ion-card data-is-vaccine-dose mode="ios" class="dose-card">
     <ion-card-content>
       <ion-card-title>
         <span class="dose-hashtag">#</span>

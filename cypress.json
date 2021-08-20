@@ -1,3 +1,14 @@
 {
-  "pluginsFile": "tests/e2e/plugins/index.js"
+  "pluginsFile": "tests/e2e/plugins/index.js",
+  "viewportWidth": 375,
+  "viewportHeight": 660,
+  "testFiles": [
+    "home/initial.js",
+    "editor/addACard.js" ,
+    "preview/afterAddingACard.js",
+    "home/viewermode.js",
+    "editor/editACard.js",
+    "preview/afterEditingACard.js",
+    "*.js"
+  ]
 }

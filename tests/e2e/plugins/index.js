@@ -7,13 +7,22 @@
 // https://docs.cypress.io/api/plugins/preprocessors-api.html#Examples
 
 // /* eslint-disable import/no-extraneous-dependencies, global-require */
-// const webpack = require('@cypress/webpack-preprocessor')
+const webpack = require('@cypress/webpack-preprocessor')
+// const browserify = require('@cypress/browserify-preprocessor')
 
 module.exports = (on, config) => {
-  // on('file:preprocessor', webpack({
-  //  webpackOptions: require('@vue/cli-service/webpack.config'),
-  //  watchOptions: {}
-  // }))
+  
+
+  // const options = browserify.defaultOptions
+  // const envPreset = options.browserifyOptions.transform[1][1].presets[0]
+  // options.browserifyOptions.transform[1][1].presets[0] = [envPreset, { ignoreBrowserslistConfig: true }]
+
+  on('file:preprocessor', webpack({
+    webpackOptions: require('@vue/cli-service/webpack.config'),
+    watchOptions: {}
+   }))
+  
+   // on('file:preprocessor', browserify(options))
 
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',
