@@ -33,6 +33,7 @@
         placeholder="NX74205"
         :max="10"
         :pattern="/[a-zA-Z0-9]/g"
+        :banSpaces="true"
         :noPadding="true"
         :popover="popoverHelp.dose.lot"
         >LOT Number</field-input

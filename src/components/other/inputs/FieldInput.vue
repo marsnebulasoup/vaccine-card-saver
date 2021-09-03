@@ -82,8 +82,8 @@ export default defineComponent({
     const isPopoverOpen = ref(false);
     const popoverEvent = ref();
     const openPopover = (ev: any) => {
-      DEBUG && console.log('Opening popover, ', ev);
-      tap()
+      DEBUG && console.log("Opening popover, ", ev);
+      tap();
       isPopoverOpen.value = true;
       popoverEvent.value = ev;
     };
@@ -99,7 +99,8 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       (curr) => {
-        DEBUG && console.log(`Setting inputValue in ${props.name} to "${curr}"`);
+        DEBUG &&
+          console.log(`Setting inputValue in ${props.name} to "${curr}"`);
         inputValue.value = curr || "";
       },
       { immediate: true }
@@ -107,7 +108,9 @@ export default defineComponent({
     watch(
       inputValue,
       (curr) => {
-        DEBUG && console.log(`Validating inputValue "${curr}" in ${props.name} `);
+        DEBUG &&
+          console.log(`Validating inputValue "${curr}" in ${props.name} `);
+        if(props.banSpaces) inputValue.value = inputValue.value.trim();
         validateInput(curr);
       },
       { immediate: true }
@@ -196,6 +199,10 @@ export default defineComponent({
     max: {
       type: Number,
     },
+    banSpaces: {
+      type: Boolean,
+      default: false
+    },
     noPadding: {
       type: Boolean,
       default: false,
@@ -206,8 +213,8 @@ export default defineComponent({
     },
     popover: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
     IonItem,

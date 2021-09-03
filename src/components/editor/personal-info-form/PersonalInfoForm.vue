@@ -12,6 +12,7 @@
           placeholder="Sisko"
           :max="50"
           :pattern="/^[\p{L},.'-]+$/u"
+          :banSpaces="true"
           :popover="popoverHelp.lastName"
           v-model="content.lastName"
           >Last Name</field-input
@@ -28,6 +29,7 @@
           :icon="person"
           placeholder="Benjamin"
           :max="50"
+          :banSpaces="true"
           :pattern="/^[\p{L},.'-]+$/u"
           :popover="popoverHelp.firstName"
           v-model="content.firstName"
@@ -41,6 +43,7 @@
           :icon="person"
           :max="1"
           placeholder="L"
+          :banSpaces="true"
           :pattern="/^[\p{L},.'-]+$/u"
           :popover="popoverHelp.middleInitial"
           v-model="content.middleInitial"
@@ -72,6 +75,7 @@
           placeholder="5S30M1HE25S7"
           :max="20"
           :pattern="/[a-zA-Z0-9]/g"
+          :banSpaces="true"
           v-model="content.patientNumber"
           :popover="popoverHelp.patientNumber"
           >Patient number</field-input
