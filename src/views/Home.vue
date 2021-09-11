@@ -113,7 +113,7 @@ export default defineComponent({
     };
     // For debugging the reactive Cards array
     // console.log(Cards.value);
-    const DEBUG = false; // was true;
+    const DEBUG = true; // was true;
     const update = () => {
       cards.addCard({
         id: 0,
