@@ -56,7 +56,7 @@
         color="medium"
         :required="true"
         placeholder="Julian Bashir, MD"
-        :pattern="/^[\p{L}0-9 !@#$%^&*()_?:;,.'-]+$/u"
+        :pattern="/^[\p{L}0-9 !@#$%^&*()_?:;,.'‘’“”-]+$/u"
         :noPadding="true"
         :wrapCaption="true"
         :popover="popoverHelp.dose.administeredByOrAt"
