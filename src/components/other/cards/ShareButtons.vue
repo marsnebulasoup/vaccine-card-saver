@@ -8,7 +8,9 @@
         data-is-actual-card="true"
       >
         <ion-card-content class="center-everything">
-          <ion-icon :icon="card.icon"></ion-icon>
+          <ion-icon
+            :icon="card.icon[platform === 'ios' ? 'ios' : 'md']"
+          ></ion-icon>
           <caption-text size="3.5vw" style="margin-top: 10px" :inline="false">{{
             card.caption
           }}</caption-text>
@@ -22,28 +24,40 @@
 import { createAnimation, IonCard, IonCardContent, IonIcon } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
 import CaptionText from "../text/CaptionText.vue";
-import { shareOutline as shareAsImage } from "ionicons/icons";
 import { nudge } from "@/utils/haptics";
 export default defineComponent({
   name: "ShareButtons",
+  inject: ["platform"],
   emits: ["share"],
   setup(_, { emit }) {
     const cards = ref([
       {
         caption: "Share Image",
-        icon: shareAsImage,
+        icon: {
+          md: require("@/assets/icons/shareAsImage.svg"),
+          ios: require("@/assets/icons/shareAsImageIos.svg"),
+        },
       },
       {
         caption: "Share Image And Text",
-        icon: shareAsImage,
+        icon: {
+          md: require("@/assets/icons/shareImageAndTextMd.svg"),
+          ios: require("@/assets/icons/shareImageAndTextIos.svg"),
+        },
       },
       {
         caption: "Copy Image",
-        icon: shareAsImage,
+        icon: {
+          md: require("@/assets/icons/copyImageToClipboard.svg"),
+          ios: require("@/assets/icons/copyImageToClipboard.svg"),
+        },
       },
       {
         caption: "Copy Text",
-        icon: shareAsImage,
+        icon: {
+          md: require("@/assets/icons/copyTextToClipboard.svg"),
+          ios: require("@/assets/icons/copyTextToClipboard.svg"),
+        },
       },
     ]);
 

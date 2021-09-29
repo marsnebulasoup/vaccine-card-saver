@@ -52,7 +52,7 @@
       <field-input
         name="Healthcare Professional or Clinic Site"
         v-model="inputs.administeredByOrAt"
-        :icon="dateIcon"
+        :icon="clinicSiteIcon"
         color="medium"
         :required="true"
         placeholder="Julian Bashir, MD"

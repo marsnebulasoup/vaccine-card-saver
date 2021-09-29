@@ -71,7 +71,7 @@
         <field-input
           name="Patient Number"
           errorMsg="That doesn't look like a valid patient number"
-          :icon="documentText"
+          :icon="patientNumberIcon"
           placeholder="5S30M1HE25S7"
           :max="20"
           :pattern="/[a-zA-Z0-9]/g"
@@ -86,7 +86,7 @@
       <ion-col>
         <checkbox
           name="Fully Vaccinated"
-          :icon="person"
+          :icon="fullyVaccinatedIcon"
           color="success"
           placeholder="Are you fully vaccinated?"
           v-model="content.fullyVaccinated"
@@ -110,8 +110,18 @@ export default defineComponent({
   name: "PersonalInfoForm",
   setup() {
     const content: Ref<Card> = inject("content") as Ref<Card>;
-    const popoverHelp = require('@/assets/PopoverHelp.json')
-    return { popoverHelp, person, content, calendar, documentText };
+    const popoverHelp = require("@/assets/PopoverHelp.json");
+    const patientNumberIcon = require("@/assets/icons/patientNumber.svg");
+    const fullyVaccinatedIcon = require("@/assets/icons/fullyVaccinated.svg");
+
+    return {
+      popoverHelp,
+      person,
+      content,
+      calendar,
+      patientNumberIcon,
+      fullyVaccinatedIcon,
+    };
   },
   components: {
     IonGrid,
