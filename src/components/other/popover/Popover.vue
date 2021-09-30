@@ -65,11 +65,11 @@ export default defineComponent({
 
 <style>
 .popover-styles .popover-content {
-  top: 0px !important;
-  left: 0px !important;
   margin: 16vh 30px !important;
   width: unset !important;
   max-height: 75vh;
+  max-width: 85vw;
+  position: unset;
 }
 
 .popover-styles .popover-title {
@@ -80,6 +80,7 @@ export default defineComponent({
 
 .popover-styles .popover-image {
   border-radius: 4px;
+  width: 100%;
 }
 
 .popover-styles ion-icon {
