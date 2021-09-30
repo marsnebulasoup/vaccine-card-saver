@@ -1,6 +1,6 @@
 import { nudge } from './../haptics/index';
 import scrollIntoView from "scroll-into-view";
-import { Ref, ref } from "vue";
+import { Ref, ref, watch } from "vue";
 import { Card } from "../cards/card";
 import { ScreenBrightness } from '@capacitor-community/screen-brightness';
 import { useRouter } from 'vue-router';
@@ -81,7 +81,6 @@ export const ViewerModeHandler = (page: Ref) => {
       - The device is vibrated.
       - The screen brightness is set back to normal.
       - The "tools" panel changes to a tips panel.
-
   */
   const DEBUG = false;
   const router = useRouter()
@@ -90,6 +89,7 @@ export const ViewerModeHandler = (page: Ref) => {
   const isLeavingViewerMode = ref(false);
   const cardInViewerMode = ref<Card>();
   const initialBrightness = ref<number>(0.5);
+  const shouldChangeBrightness = ref(false);
 
   getBrightness(initialBrightness)
 
@@ -104,6 +104,7 @@ export const ViewerModeHandler = (page: Ref) => {
       isInViewerMode.value = false;
       isLeavingViewerMode.value = true;
       cardInViewerMode.value = undefined;
+      shouldChangeBrightness.value = false;
 
       setTimeout(() => scrollIntoView(cardEl, {
         time: 0,
@@ -117,11 +118,14 @@ export const ViewerModeHandler = (page: Ref) => {
     }
     else {
       isInViewerMode.value = true;
-      getBrightness(initialBrightness).then(() => setBrightness(1))
+      if (shouldChangeBrightness.value) getBrightness(initialBrightness).then(() => setBrightness(1))
       page.value.$el.scrollToTop()
-
     }
   };
+
+  watch(shouldChangeBrightness, (curr) => {
+    curr ? setBrightness(1) : setBrightness(initialBrightness.value)
+  })
 
 
   const shouldHideCard = (card: Card) => {
@@ -140,7 +144,7 @@ export const ViewerModeHandler = (page: Ref) => {
 
 
   const registerBackButtonHandler = () => {
-    return useBackButton(9, (processNextHandler) => {
+    return useBackButton(9, (/* processNextHandler */) => {
       if (isInViewerMode.value) openOrCloseViewerMode(undefined, cardInViewerMode.value?.id, false)
       // processNextHandler()
     }).unregister;
@@ -153,7 +157,7 @@ export const ViewerModeHandler = (page: Ref) => {
     if (to.name === "Home") {
       unregisterBackButtonHandler = registerBackButtonHandler()
 
-      if (isInViewerMode.value) {
+      if (isInViewerMode.value && shouldChangeBrightness.value) {
         setBrightness(1)
       }
     }
@@ -165,6 +169,7 @@ export const ViewerModeHandler = (page: Ref) => {
     isInViewerMode,
     isLeavingViewerMode,
     cardInViewerMode,
+    shouldChangeBrightness,
     openOrCloseViewerMode,
     shouldHideCard,
     shouldHideCardCompletely,

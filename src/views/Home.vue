@@ -58,12 +58,24 @@
         <error-details title="Cards" :data="cards.allCards.value" />
       </div>
 
-      <ion-icon
+      <toggle-button
         v-if="isInViewerMode"
-        @click="openOrCloseViewerMode(undefined, cardInViewerMode.id)"
-        class="exit-viewer-mode-icon"
-        :icon="exitViewerModeIcon"
-      ></ion-icon>
+        @clicked="openOrCloseViewerMode(undefined, cardInViewerMode.id)"
+        :iconDefault="exitViewerModeIcon"
+        position="right"
+        :vibrate="false"
+      ></toggle-button>
+
+      <!-- TODO: Toggle Brightness Button not yet implemented -->
+      <toggle-button
+        v-if="isInViewerMode"
+        :iconDefault="maxBrightness"
+        :iconSecondary="normalBrightness"
+        position="left"
+        size="24px"
+        @clicked="shouldChangeBrightness = $event"
+      ></toggle-button>
+
       <fab :class="{ invisible: isInViewerMode }" @click="openEditor()" />
     </ion-content>
   </ion-page>
@@ -75,7 +87,6 @@ import {
   IonHeader,
   IonPage,
   IonToolbar,
-  IonIcon,
   onIonViewDidEnter,
 } from "@ionic/vue";
 import { defineComponent, inject, provide, ref } from "vue";
@@ -89,12 +100,11 @@ import Fab from "@/components/other/Fab.vue";
 import ListAnimations from "@/utils/animations/list";
 import ErrorDetails from "@/components/other/text/ErrorDetails.vue";
 import { ViewerModeHandler } from "@/utils/other/ViewerModeHandler";
-
 import ViewerModeTools from "@/components/home/ViewerModeTools.vue";
 import { nudge } from "@/utils/haptics";
 import InfoCard from "@/components/other/cards/InfoCard.vue";
 import { closeOutline as exitViewerModeIcon } from "ionicons/icons";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import ToggleButton from "@/components/other/buttons/ToggleButton.vue";
 
 export default defineComponent({
   name: "Home",
@@ -155,6 +165,7 @@ export default defineComponent({
       isInViewerMode,
       isLeavingViewerMode,
       cardInViewerMode,
+      shouldChangeBrightness,
       openOrCloseViewerMode,
       shouldHideCard,
       shouldHideCardCompletely,
@@ -172,9 +183,12 @@ export default defineComponent({
       isLeavingViewerMode,
       exitViewerModeIcon,
       cardInViewerMode,
+      shouldChangeBrightness,
       openOrCloseViewerMode,
       shouldHideCard,
       shouldHideCardCompletely,
+      normalBrightness: require("@/assets/icons/normalBrightness.svg"),
+      maxBrightness: require("@/assets/icons/maxBrightness.svg"),
     };
   },
   methods: {
@@ -185,7 +199,6 @@ export default defineComponent({
     IonHeader,
     IonPage,
     IonToolbar,
-    IonIcon,
     AddACard,
     WrappableTitle,
     VaccineCard,
@@ -193,6 +206,7 @@ export default defineComponent({
     ErrorDetails,
     ViewerModeTools,
     InfoCard,
+    ToggleButton,
   },
 });
 </script>
@@ -204,13 +218,6 @@ export default defineComponent({
 
 ion-title {
   font-weight: 800;
-}
-
-.exit-viewer-mode-icon {
-  position: fixed;
-  top: 50px;
-  right: 15px;
-  font-size: 30px;
 }
 
 .invisible {
