@@ -78,7 +78,7 @@ export const VerifyValidation = (errors: Ref<Errors>, callback: Function) => {
     const error = errors.value[key]
     if (error.exists) {
       DEBUG && console.log('Validation failed, showing error')
-      notify({ type: NotificationType.Warning })
+      notify({ type: NotificationType.Error })
       error.show = true
       return
     }
